@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ระบบทะเบียนคุมสัญญายืมเงินราชการ (แบบ 8500)</title>
+  <!-- Google Fonts: Sarabun & Prompt -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@400;500;600;700&family=Sarabun:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Sarabun', 'sans-serif'],
+            display: ['Prompt', 'sans-serif'],
+            mono: ['JetBrains Mono', 'monospace'],
+          },
+          colors: {
+            emerald: {
+              50: '#ecfdf5',
+              100: '#d1fae5',
+              600: '#059669',
+              700: '#047857',
+              800: '#065f46',
+              900: '#064e3b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Sarabun', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+    .font-prompt {
+      font-family: 'Prompt', sans-serif;
+    }
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .print-only {
+        display: block !important;
+      }
+      .print-modal {
+        position: static !important;
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        box-shadow: none !important;
+        border: none !important;
+        overflow: visible !important;
+      }
+      @page {
+        size: A4 landscape;
+        margin: 15mm 10mm 15mm 10mm;
+      }
+      .page-portrait {
+        size: A4 portrait;
+        margin: 20mm 15mm 20mm 25mm;
+      }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+  <!-- TOP APP BAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-xs no-print">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-bold shadow-xs">
+          <!-- Emblem / Logo Icon -->
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+          </svg>
+        </div>
+        <div>
+          <h1 class="text-base sm:text-lg font-bold text-slate-900 leading-tight font-prompt">
+            ระบบทะเบียนคุมสัญญายืมเงินราชการ (แบบ 8500)
+          </h1>
+          <p class="text-xs text-slate-500 flex items-center gap-1.5">
+            <span>ฐานข้อมูล Google Sheets ผ่าน Apps Script Web App</span>
+            <span id="envBadge" class="inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200">
+              ● GAS Online
+            </span>
+          </p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-2">
+        <button onclick="refreshData()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-lg transition-colors cursor-pointer" title="รีเฟรชข้อมูลจากชีต">
+          <svg id="syncIcon" class="w-3.5 h-3.5 text-slate-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span class="hidden sm:inline">รีเฟรชข้อมูล</span>
+        </button>
+
+        <button onclick="openForm8500Print()" class="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-emerald-800 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 rounded-lg transition-colors cursor-pointer">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"></path>
+          </svg>
+          <span>พิมพ์แบบ 8500</span>
+        </button>
+
+        <button onclick="openAddContractModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 text-xs font-semibold text-white bg-emerald-700 hover:bg-emerald-800 rounded-lg shadow-xs transition-colors cursor-pointer">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+          </svg>
+          <span>+ บันทึกสัญญาใหม่</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN CONTAINER -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6 no-print">
+
+    <!-- KPI STATS CARDS -->
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3.5">
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div class="text-xs text-slate-500 font-medium">สัญญาทั้งหมด</div>
+        <div class="mt-1 text-2xl font-bold text-slate-900 font-prompt" id="statTotalContracts">0</div>
+        <div class="mt-0.5 text-[11px] text-slate-400">รายการสัญญาในระบบ</div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div class="text-xs text-slate-500 font-medium">วงเงินยืมรวม</div>
+        <div class="mt-1 text-xl font-bold text-emerald-700 font-prompt" id="statTotalLoanAmount">฿0.00</div>
+        <div class="mt-0.5 text-[11px] text-emerald-600">สัญญาที่อนุมัติทั้งหมด</div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div class="text-xs text-slate-500 font-medium">ส่งใช้คืนแล้ว</div>
+        <div class="mt-1 text-xl font-bold text-sky-700 font-prompt" id="statTotalRepaid">฿0.00</div>
+        <div class="mt-0.5 text-[11px] text-sky-600">เงินสด + ใบสำคัญ</div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs">
+        <div class="text-xs text-slate-500 font-medium">หนี้คงค้างรวม</div>
+        <div class="mt-1 text-xl font-bold text-amber-700 font-prompt" id="statRemainingDebt">฿0.00</div>
+        <div class="mt-0.5 text-[11px] text-amber-600">ยอดที่ต้องติดตามส่งใช้</div>
+      </div>
+
+      <div class="bg-white p-4 rounded-xl border border-rose-200 bg-rose-50/50 shadow-2xs col-span-2 sm:col-span-1">
+        <div class="text-xs text-rose-700 font-medium flex items-center justify-between">
+          <span>เกินกำหนดส่งใช้</span>
+          <span class="w-2 h-2 rounded-full bg-rose-600 animate-pulse"></span>
+        </div>
+        <div class="mt-1 text-2xl font-bold text-rose-700 font-prompt" id="statOverdueCount">0</div>
+        <div class="mt-0.5 text-[11px] text-rose-600">เกิน 30 วันตามระเบียบ</div>
+      </div>
+    </div>
+
+    <!-- FILTER & SEARCH BAR -->
+    <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-2xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
+      <div class="flex-1 relative">
+        <svg class="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="handleSearch()"
+          placeholder="ค้นหาเลขที่สัญญา, ชื่อ-สกุลผู้ยืม, กลุ่มงาน/ฝ่าย, วัตถุประสงค์..." 
+          class="w-full pl-9 pr-3.5 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+        />
+      </div>
+
+      <div class="flex items-center gap-2 shrink-0">
+        <!-- Fiscal Year Filter -->
+        <select 
+          id="fiscalYearFilter" 
+          onchange="handleFilterChange()"
+          class="px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+        >
+          <option value="all">ปีงบประมาณทั้งหมด</option>
+          <option value="2569">ปีงบ 2569</option>
+          <option value="2568" selected>ปีงบ 2568</option>
+          <option value="2567">ปีงบ 2567</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select 
+          id="statusFilter" 
+          onchange="handleFilterChange()"
+          class="px-3 py-2 text-xs bg-slate-50 border border-slate-300 rounded-lg text-slate-800 focus:outline-none focus:ring-2 focus:ring-emerald-600"
+        >
+          <option value="all">สถานะทั้งหมด</option>
+          <option value="active">ปกติ (ยังไม่ครบกำหนด)</option>
+          <option value="overdue">เกินกำหนดส่งใช้</option>
+          <option value="settled">ส่งใช้ครบถ้วน (ปิดสัญญา)</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- CONTRACTS TABLE (แบบ 8500) -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-2xs overflow-hidden">
+      <div class="px-5 py-3.5 border-b border-slate-100 flex items-center justify-between">
+        <h3 class="text-xs font-bold text-slate-800 uppercase tracking-wider font-prompt flex items-center gap-2">
+          <span>ทะเบียนคุมสัญญาเงินยืม (แบบ 8500)</span>
+          <span id="filteredCountBadge" class="px-2 py-0.5 rounded-full text-[11px] font-mono bg-slate-100 text-slate-700">0 รายการ</span>
+        </h3>
+        <span class="text-2xs text-slate-400">ระเบียบกระทรวงการคลังฯ พ.ศ. 2562</span>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full text-left border-collapse text-xs">
+          <thead>
+            <tr class="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold">
+              <th class="py-3 px-3.5 w-12 text-center">ลำดับ</th>
+              <th class="py-3 px-3.5 min-w-[110px]">เลขที่สัญญา</th>
+              <th class="py-3 px-3.5 min-w-[100px]">วันที่สัญญา</th>
+              <th class="py-3 px-3.5 min-w-[160px]">ชื่อผู้ยืม / กลุ่มงาน</th>
+              <th class="py-3 px-3.5 min-w-[180px]">วัตถุประสงค์</th>
+              <th class="py-3 px-3.5 text-right min-w-[100px]">วงเงินยืม</th>
+              <th class="py-3 px-3.5 min-w-[110px]">กำหนดส่งใช้</th>
+              <th class="py-3 px-3.5 text-right min-w-[100px]">ส่งใช้แล้ว</th>
+              <th class="py-3 px-3.5 text-right min-w-[100px]">หนี้คงเหลือ</th>
+              <th class="py-3 px-3.5 text-center min-w-[110px]">สถานะ</th>
+              <th class="py-3 px-3.5 text-center w-28 no-print">จัดการ</th>
+            </tr>
+          </thead>
+          <tbody id="contractsTableBody" class="divide-y divide-slate-100 text-slate-700">
+            <!-- Dynamic rows will be rendered here -->
+            <tr>
+              <td colspan="11" class="py-12 text-center text-slate-400">
+                <div class="inline-block animate-spin w-6 h-6 border-2 border-emerald-600 border-t-transparent rounded-full mb-2"></div>
+                <div>กำลังโหลดข้อมูลจาก Google Sheets...</div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <!-- MODAL: ADD / EDIT CONTRACT -->
+  <div id="contractModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-2xl w-full p-6 shadow-xl border border-slate-200 my-8">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <h3 id="contractModalTitle" class="text-base font-bold text-slate-900 font-prompt">
+          บันทึกสัญญาการยืมเงินใหม่
+        </h3>
+        <button onclick="closeContractModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+      </div>
+
+      <form id="contractForm" onsubmit="handleSaveContract(event)" class="mt-4 space-y-4 text-xs">
+        <input type="hidden" id="formContractId" />
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เลขที่สัญญา <span class="text-rose-500">*</span></label>
+            <input type="text" id="formContractNo" required placeholder="ย.01/2568" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">วันที่ทำสัญญา <span class="text-rose-500">*</span></label>
+            <input type="date" id="formContractDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ปีงบประมาณ <span class="text-rose-500">*</span></label>
+            <input type="number" id="formFiscalYear" required value="2568" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ชื่อ-สกุล ผู้ยืม <span class="text-rose-500">*</span></label>
+            <input type="text" id="formBorrowerName" required placeholder="นาย/นาง/นางสาว..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ตำแหน่ง</label>
+            <input type="text" id="formPosition" placeholder="นักวิชาการเงินและบัญชี" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">กลุ่มงาน / สังกัด</label>
+            <input type="text" id="formDepartment" placeholder="กลุ่มบริหารงานการเงิน" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">วัตถุประสงค์การยืมเงิน <span class="text-rose-500">*</span></label>
+          <textarea id="formPurpose" required rows="2" placeholder="ระบุวัตถุประสงค์ เช่น เพื่อเป็นค่าใช้จ่ายในการเดินทางไปราชการจัดประชุม..." class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600"></textarea>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ประเภทเงินยืม</label>
+            <select id="formBudgetType" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600">
+              <option value="เงินงบประมาณ (เงินรายจ่ายประจำปี)">เงินงบประมาณ (เงินรายจ่ายประจำปี)</option>
+              <option value="เงินนอกงบประมาณ">เงินนอกงบประมาณ</option>
+              <option value="เงินรายได้แผ่นดิน / รายได้สถานศึกษา">เงินรายได้แผ่นดิน / รายได้สถานศึกษา</option>
+              <option value="เงินทดรองราชการ">เงินทดรองราชการ</option>
+              <option value="เงินอุดหนุนทั่วไป / เฉพาะกิจ">เงินอุดหนุนทั่วไป / เฉพาะกิจ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">วงเงินที่ขอยืม (บาท) <span class="text-rose-500">*</span></label>
+            <input type="number" step="0.01" id="formLoanAmount" required placeholder="0.00" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600 font-mono font-semibold" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">วันที่จ่ายเงินยืมให้ผู้ยืม <span class="text-rose-500">*</span></label>
+            <input type="date" id="formDisbursementDate" required onchange="autoCalculateDueDate()" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">กำหนดวันส่งใช้คืน (ตามระเบียบ 30 วัน) <span class="text-rose-500">*</span></label>
+            <input type="date" id="formDueDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900 focus:ring-2 focus:ring-emerald-600" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">หมายเหตุเพิ่มเติม</label>
+          <input type="text" id="formRemarks" placeholder="ระบุหมายเหตุถ้ามี" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg text-slate-900" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeContractModal()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">ยกเลิก</button>
+          <button type="submit" id="saveContractBtn" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold shadow-xs">
+            บันทึกสัญญา
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- MODAL: ADD REPAYMENT (บันทึกการส่งใช้คืน) -->
+  <div id="repaymentModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 overflow-y-auto no-print">
+    <div class="bg-white rounded-2xl max-w-lg w-full p-6 shadow-xl border border-slate-200">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div>
+          <h3 class="text-sm font-bold text-slate-900 font-prompt">บันทึกการส่งใช้คืนเงินยืม</h3>
+          <p id="repaymentContractSubtitle" class="text-xs text-slate-500 mt-0.5">สัญญาเลขที่...</p>
+        </div>
+        <button onclick="closeRepaymentModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+      </div>
+
+      <!-- Current Contract Balance Summary -->
+      <div class="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-200 grid grid-cols-3 text-center text-xs">
+        <div>
+          <span class="text-slate-400 block text-[10px]">วงเงินยืม</span>
+          <strong id="repLoanAmount" class="text-slate-900">฿0.00</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[10px]">ส่งใช้แล้ว</span>
+          <strong id="repTotalPaid" class="text-emerald-700">฿0.00</strong>
+        </div>
+        <div>
+          <span class="text-slate-400 block text-[10px]">หนี้คงค้าง</span>
+          <strong id="repRemainingDebt" class="text-rose-700">฿0.00</strong>
+        </div>
+      </div>
+
+      <form id="repaymentForm" onsubmit="handleSaveRepayment(event)" class="mt-4 space-y-3.5 text-xs">
+        <input type="hidden" id="repaymentContractId" />
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">วันที่ส่งใช้คืน <span class="text-rose-500">*</span></label>
+          <input type="date" id="repDate" required class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-600" />
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เงินสด / เงินโอน (บาท)</label>
+            <input type="number" step="0.01" id="repCashAmount" placeholder="0.00" value="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เลขที่ใบเสร็จรับเงินสด</label>
+            <input type="text" id="repReceiptNo" placeholder="บส.001/2568" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ใบสำคัญคู่จ่าย (บาท)</label>
+            <input type="number" step="0.01" id="repVoucherAmount" placeholder="0.00" value="0" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg font-mono" />
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">เลขที่ใบสำคัญ / ฎีกา</label>
+            <input type="text" id="repVoucherNo" placeholder="บช.123/2568" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg" />
+          </div>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">หมายเหตุการส่งใช้</label>
+          <input type="text" id="repNotes" placeholder="ส่งใช้คืนครั้งที่ 1 พร้อมใบเสร็จและเงินสด" class="w-full px-3 py-2 bg-slate-50 border border-slate-300 rounded-lg" />
+        </div>
+
+        <div class="flex items-center justify-end gap-2 pt-3 border-t border-slate-100">
+          <button type="button" onclick="closeRepaymentModal()" class="px-4 py-2 text-slate-600 hover:bg-slate-100 rounded-lg">ยกเลิก</button>
+          <button type="submit" class="px-5 py-2 bg-emerald-700 hover:bg-emerald-800 text-white rounded-lg font-semibold shadow-xs">
+            + บันทึกส่งใช้คืน
+          </button>
+        </div>
+      </form>
+
+      <!-- Existing Repayments List -->
+      <div class="mt-4 pt-3 border-t border-slate-200">
+        <h4 class="text-xs font-bold text-slate-700 mb-2">ประวัติการส่งใช้คืนของสัญญานี้:</h4>
+        <div id="existingRepaymentsList" class="space-y-1.5 max-h-36 overflow-y-auto text-xs">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: OFFICIAL DEMAND LETTER (หนังสือทวงถามหนี้ ตราครุฑ) -->
+  <div id="demandLetterModal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-3xl w-full p-8 shadow-xl border border-slate-200 print-modal my-6">
+      <div class="flex items-center justify-between pb-4 border-b border-slate-200 no-print">
+        <div class="flex items-center gap-2">
+          <span class="px-2 py-0.5 rounded text-xs font-semibold bg-rose-100 text-rose-800">
+            หนังสือทวงถามหนี้เงินยืม
+          </span>
+          <span class="text-xs text-slate-500">บันทึกข้อความตราครุฑมาตรฐาน</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="px-3.5 py-1.5 bg-emerald-700 text-white text-xs font-semibold rounded-lg hover:bg-emerald-800">
+            🖨️ สั่งพิมพ์เอกสาร (Print A4)
+          </button>
+          <button onclick="closeDemandLetterModal()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+        </div>
+      </div>
+
+      <!-- Demand Letter Body (Printable Official Memo) -->
+      <div id="demandLetterContent" class="mt-6 text-slate-900 leading-relaxed font-sarabun text-sm">
+        <!-- Dynamically rendered -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL: FORM 8500 PRINT (แบบ 8500 ฉบับเต็ม) -->
+  <div id="form8500Modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white rounded-2xl max-w-5xl w-full p-6 shadow-xl border border-slate-200 print-modal my-4">
+      <div class="flex items-center justify-between pb-3 border-b border-slate-200 no-print">
+        <h3 class="text-sm font-bold text-slate-900 font-prompt">
+          ทะเบียนคุมสัญญาเงินยืม (แบบ 8500) ฉบับพิมพ์มาตรฐาน
+        </h3>
+        <div class="flex items-center gap-2">
+          <button onclick="window.print()" class="px-3.5 py-1.5 bg-emerald-700 text-white text-xs font-semibold rounded-lg hover:bg-emerald-800">
+            🖨️ สั่งพิมพ์แบบ 8500 (A4 แนวนอน)
+          </button>
+          <button onclick="closeForm8500Print()" class="text-slate-400 hover:text-slate-600 text-lg">✕</button>
+        </div>
+      </div>
+
+      <div id="form8500PrintContent" class="mt-4 text-xs font-sarabun">
+        <!-- Dynamically filled with full Form 8500 layout -->
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION -->
+  <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-12 opacity-0 transition-all duration-300 pointer-events-none no-print">
+    <div id="toastBox" class="px-4 py-2.5 rounded-xl shadow-lg border text-xs font-medium flex items-center gap-2 bg-slate-900 text-white">
+      <span id="toastIcon">✓</span>
+      <span id="toastMessage">แจ้งเตือน</span>
+    </div>
+  </div>
+
+  <!-- APP JAVASCRIPT LOGIC -->
+  <script>
+    // State
+    let contracts = [];
+    let currentContractForRepayment = null;
+
+    // Detect if running inside Google Apps Script Web App
+    const isGasEnv = typeof google !== 'undefined' && google.script && google.script.run;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      updateEnvBadge();
+      loadContracts();
+    });
+
+    function updateEnvBadge() {
+      const badge = document.getElementById('envBadge');
+      if (isGasEnv) {
+        badge.innerHTML = '● Google Apps Script (Connected)';
+        badge.className = 'inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono bg-emerald-50 text-emerald-700 border border-emerald-200';
+      } else {
+        badge.innerHTML = '● Local / Standalone Mode';
+        badge.className = 'inline-flex items-center px-1.5 py-0.2 rounded text-[10px] font-mono bg-amber-50 text-amber-700 border border-amber-200';
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Load & Sync Data
+    // -------------------------------------------------------------------------
+
+    function loadContracts() {
+      setSyncSpin(true);
+
+      if (isGasEnv) {
+        google.script.run
+          .withSuccessHandler(function(data) {
+            setSyncSpin(false);
+            contracts = Array.isArray(data) ? data : [];
+            renderAll();
+            showToast('ดึงข้อมูลจาก Google Sheets สำเร็จ (' + contracts.length + ' รายการ)', 'success');
+          })
+          .withFailureHandler(function(err) {
+            setSyncSpin(false);
+            showToast('ดึงข้อมูลไม่สำเร็จ: ' + err, 'error');
+            loadFallbackData();
+          })
+          .apiGetContracts();
+      } else {
+        // Fallback: load from localStorage or sample mock data
+        setTimeout(() => {
+          setSyncSpin(false);
+          loadFallbackData();
+        }, 300);
+      }
+    }
+
+    function refreshData() {
+      loadContracts();
+    }
+
+    function setSyncSpin(isSpinning) {
+      const icon = document.getElementById('syncIcon');
+      if (icon) {
+        if (isSpinning) icon.classList.add('animate-spin');
+        else icon.classList.remove('animate-spin');
+      }
+    }
+
+    function loadFallbackData() {
+      try {
+        const stored = localStorage.getItem('gov_loan_contracts_gas');
+        if (stored) {
+          contracts = JSON.parse(stored);
+        } else {
+          contracts = getSampleInitialData();
+          localStorage.setItem('gov_loan_contracts_gas', JSON.stringify(contracts));
+        }
+      } catch (e) {
+        contracts = getSampleInitialData();
+      }
+      renderAll();
+    }
+
+    function saveLocallyIfFallback() {
+      if (!isGasEnv) {
+        localStorage.setItem('gov_loan_contracts_gas', JSON.stringify(contracts));
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Calculations & Status Helper
+    // -------------------------------------------------------------------------
+
+    function calculateContractSummary(c) {
+      const loanAmount = Number(c.loanAmount) || 0;
+      let totalCash = 0;
+      let totalVoucher = 0;
+
+      if (Array.isArray(c.repayments)) {
+        c.repayments.forEach(r => {
+          totalCash += Number(r.cashAmount) || 0;
+          totalVoucher += Number(r.voucherAmount) || 0;
+        });
+      }
+
+      const totalSettled = totalCash + totalVoucher;
+      const remainingDebt = Math.max(0, loanAmount - totalSettled);
+      const isFullySettled = remainingDebt <= 0 && loanAmount > 0;
+
+      // Date calculations
+      const now = new Date();
+      now.setHours(0, 0, 0, 0);
+
+      let isOverdue = false;
+      let daysOverdue = 0;
+
+      if (!isFullySettled && c.dueDate) {
+        const due = new Date(c.dueDate);
+        due.setHours(0, 0, 0, 0);
+        if (now > due) {
+          isOverdue = true;
+          daysOverdue = Math.floor((now - due) / (1000 * 60 * 60 * 24));
+        }
+      }
+
+      let statusKey = 'active';
+      let statusLabel = 'ปกติ';
+      let statusColor = 'bg-slate-100 text-slate-700 border-slate-200';
+
+      if (isFullySettled) {
+        statusKey = 'settled';
+        statusLabel = 'ส่งใช้ครบแล้ว';
+        statusColor = 'bg-emerald-50 text-emerald-700 border-emerald-300';
+      } else if (isOverdue) {
+        statusKey = 'overdue';
+        statusLabel = `เกินกำหนด (${daysOverdue} วัน)`;
+        statusColor = 'bg-rose-50 text-rose-700 border-rose-300 font-semibold';
+      } else {
+        statusKey = 'active';
+        statusLabel = 'รอส่งใช้คืน';
+        statusColor = 'bg-sky-50 text-sky-700 border-sky-300';
+      }
+
+      return {
+        loanAmount,
+        totalCash,
+        totalVoucher,
+        totalSettled,
+        remainingDebt,
+        isFullySettled,
+        isOverdue,
+        daysOverdue,
+        statusKey,
+        statusLabel,
+        statusColor
+      };
+    }
+
+    // -------------------------------------------------------------------------
+    // Rendering Logic
+    // -------------------------------------------------------------------------
+
+    function renderAll() {
+      renderStats();
+      renderTable();
+    }
+
+    function renderStats() {
+      let totalAmount = 0;
+      let totalRepaid = 0;
+      let totalDebt = 0;
+      let overdueCount = 0;
+
+      contracts.forEach(c => {
+        const sum = calculateContractSummary(c);
+        totalAmount += sum.loanAmount;
+        totalRepaid += sum.totalSettled;
+        totalDebt += sum.remainingDebt;
+        if (sum.isOverdue) overdueCount++;
+      });
+
+      document.getElementById('statTotalContracts').textContent = contracts.length.toLocaleString('th-TH');
+      document.getElementById('statTotalLoanAmount').textContent = '฿' + totalAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+      document.getElementById('statTotalRepaid').textContent = '฿' + totalRepaid.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+      document.getElementById('statRemainingDebt').textContent = '฿' + totalDebt.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+      document.getElementById('statOverdueCount').textContent = overdueCount.toLocaleString('th-TH');
+    }
+
+    function renderTable() {
+      const tbody = document.getElementById('contractsTableBody');
+      const searchQuery = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+      const yearFilter = document.getElementById('fiscalYearFilter').value;
+      const statusFilter = document.getElementById('statusFilter').value;
+
+      const filtered = contracts.filter(c => {
+        const sum = calculateContractSummary(c);
+
+        // Fiscal Year filter
+        if (yearFilter !== 'all' && String(c.fiscalYear) !== String(yearFilter)) {
+          return false;
+        }
+
+        // Status filter
+        if (statusFilter !== 'all') {
+          if (statusFilter === 'settled' && !sum.isFullySettled) return false;
+          if (statusFilter === 'overdue' && !sum.isOverdue) return false;
+          if (statusFilter === 'active' && (sum.isFullySettled || sum.isOverdue)) return false;
+        }
+
+        // Search text
+        if (searchQuery) {
+          const matchNo = (c.contractNo || '').toLowerCase().includes(searchQuery);
+          const matchName = (c.borrowerName || '').toLowerCase().includes(searchQuery);
+          const matchDept = (c.department || '').toLowerCase().includes(searchQuery);
+          const matchPurpose = (c.purpose || '').toLowerCase().includes(searchQuery);
+          if (!matchNo && !matchName && !matchDept && !matchPurpose) return false;
+        }
+
+        return true;
+      });
+
+      document.getElementById('filteredCountBadge').textContent = filtered.length + ' รายการ';
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="11" class="py-12 text-center text-slate-400">
+              <div class="text-2xl mb-1">📋</div>
+              <div>ไม่พบรายการสัญญาที่ตรงกับเงื่อนไขการค้นหา</div>
+            </td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = filtered.map((c, idx) => {
+        const sum = calculateContractSummary(c);
+        return `
+          <tr class="hover:bg-slate-50 transition-colors">
+            <td class="py-3 px-3.5 text-center text-slate-400 font-mono text-[11px]">${idx + 1}</td>
+            <td class="py-3 px-3.5 font-bold font-mono text-emerald-800">${escapeHtml(c.contractNo)}</td>
+            <td class="py-3 px-3.5 text-slate-600 whitespace-nowrap">${formatDateThai(c.contractDate)}</td>
+            <td class="py-3 px-3.5">
+              <div class="font-semibold text-slate-900">${escapeHtml(c.borrowerName)}</div>
+              <div class="text-[11px] text-slate-500">${escapeHtml(c.department || '-')}</div>
+            </td>
+            <td class="py-3 px-3.5 text-slate-600 max-w-[200px] truncate" title="${escapeHtml(c.purpose)}">
+              ${escapeHtml(c.purpose)}
+            </td>
+            <td class="py-3 px-3.5 text-right font-mono font-semibold text-slate-900 whitespace-nowrap">
+              ฿${sum.loanAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="py-3 px-3.5 text-slate-600 whitespace-nowrap">
+              ${formatDateThai(c.dueDate)}
+            </td>
+            <td class="py-3 px-3.5 text-right font-mono text-emerald-700 whitespace-nowrap">
+              ฿${sum.totalSettled.toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="py-3 px-3.5 text-right font-mono font-bold ${sum.remainingDebt > 0 ? 'text-amber-700' : 'text-slate-400'} whitespace-nowrap">
+              ฿${sum.remainingDebt.toLocaleString('th-TH', { minimumFractionDigits: 2 })}
+            </td>
+            <td class="py-3 px-3.5 text-center whitespace-nowrap">
+              <span class="inline-block px-2.5 py-0.5 rounded-full text-[11px] border ${sum.statusColor}">
+                ${sum.statusLabel}
+              </span>
+            </td>
+            <td class="py-3 px-3.5 text-center no-print">
+              <div class="flex items-center justify-center gap-1">
+                <!-- Add Repayment -->
+                <button onclick="openRepaymentModal('${c.id}')" class="p-1 text-emerald-700 hover:bg-emerald-50 rounded" title="บันทึกส่งใช้คืน">
+                  💰
+                </button>
+                <!-- Edit -->
+                <button onclick="openEditContractModal('${c.id}')" class="p-1 text-slate-600 hover:bg-slate-100 rounded" title="แก้ไขข้อมูล">
+                  ✏️
+                </button>
+                <!-- Demand letter -->
+                ${sum.isOverdue ? `
+                  <button onclick="openDemandLetterModal('${c.id}')" class="p-1 text-rose-600 hover:bg-rose-50 rounded" title="พิมพ์หนังสือทวงถามหนี้">
+                    📄
+                  </button>
+                ` : ''}
+                <!-- Delete -->
+                <button onclick="handleDeleteContract('${c.id}')" class="p-1 text-rose-500 hover:bg-rose-50 rounded" title="ลบสัญญา">
+                  🗑️
+                </button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function handleSearch() {
+      renderTable();
+    }
+
+    function handleFilterChange() {
+      renderTable();
+    }
+
+    // -------------------------------------------------------------------------
+    // Contract Add / Edit Modal Logic
+    // -------------------------------------------------------------------------
+
+    function openAddContractModal() {
+      document.getElementById('contractModalTitle').textContent = 'บันทึกสัญญาการยืมเงินใหม่ (แบบ 8500)';
+      document.getElementById('formContractId').value = '';
+      document.getElementById('contractForm').reset();
+      document.getElementById('formFiscalYear').value = '2568';
+      document.getElementById('formContractDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('formDisbursementDate').value = new Date().toISOString().split('T')[0];
+      autoCalculateDueDate();
+
+      document.getElementById('contractModal').classList.remove('hidden');
+      document.getElementById('contractModal').classList.add('flex');
+    }
+
+    function openEditContractModal(id) {
+      const c = contracts.find(x => x.id === id);
+      if (!c) return;
+
+      document.getElementById('contractModalTitle').textContent = 'แก้ไขสัญญาการยืมเงิน: ' + c.contractNo;
+      document.getElementById('formContractId').value = c.id;
+      document.getElementById('formContractNo').value = c.contractNo || '';
+      document.getElementById('formContractDate').value = c.contractDate || '';
+      document.getElementById('formFiscalYear').value = c.fiscalYear || 2568;
+      document.getElementById('formBorrowerName').value = c.borrowerName || '';
+      document.getElementById('formPosition').value = c.position || '';
+      document.getElementById('formDepartment').value = c.department || '';
+      document.getElementById('formPurpose').value = c.purpose || '';
+      document.getElementById('formBudgetType').value = c.budgetType || 'เงินงบประมาณ (เงินรายจ่ายประจำปี)';
+      document.getElementById('formLoanAmount').value = c.loanAmount || '';
+      document.getElementById('formDisbursementDate').value = c.disbursementDate || '';
+      document.getElementById('formDueDate').value = c.dueDate || '';
+      document.getElementById('formRemarks').value = c.remarks || '';
+
+      document.getElementById('contractModal').classList.remove('hidden');
+      document.getElementById('contractModal').classList.add('flex');
+    }
+
+    function closeContractModal() {
+      document.getElementById('contractModal').classList.add('hidden');
+      document.getElementById('contractModal').classList.remove('flex');
+    }
+
+    function autoCalculateDueDate() {
+      const disDateVal = document.getElementById('formDisbursementDate').value;
+      if (disDateVal) {
+        const d = new Date(disDateVal);
+        d.setDate(d.getDate() + 30);
+        document.getElementById('formDueDate').value = d.toISOString().split('T')[0];
+      }
+    }
+
+    function handleSaveContract(e) {
+      e.preventDefault();
+      const id = document.getElementById('formContractId').value || ('contract-' + Date.now());
+      const isNew = !document.getElementById('formContractId').value;
+
+      const contract = {
+        id,
+        contractNo: document.getElementById('formContractNo').value.trim(),
+        contractDate: document.getElementById('formContractDate').value,
+        fiscalYear: Number(document.getElementById('formFiscalYear').value) || 2568,
+        borrowerName: document.getElementById('formBorrowerName').value.trim(),
+        position: document.getElementById('formPosition').value.trim(),
+        department: document.getElementById('formDepartment').value.trim(),
+        purpose: document.getElementById('formPurpose').value.trim(),
+        budgetType: document.getElementById('formBudgetType').value,
+        loanAmount: Number(document.getElementById('formLoanAmount').value) || 0,
+        disbursementDate: document.getElementById('formDisbursementDate').value,
+        dueDate: document.getElementById('formDueDate').value,
+        remarks: document.getElementById('formRemarks').value.trim(),
+        repayments: [],
+        updatedAt: new Date().toISOString()
+      };
+
+      if (!isNew) {
+        const existing = contracts.find(x => x.id === id);
+        if (existing && Array.isArray(existing.repayments)) {
+          contract.repayments = existing.repayments;
+        }
+      }
+
+      // Save via google.script.run if available
+      if (isGasEnv) {
+        showToast('กำลังบันทึกลง Google Sheets...', 'info');
+        const apiMethod = isNew ? 'apiAddContract' : 'apiUpdateContract';
+        google.script.run
+          .withSuccessHandler(function() {
+            showToast('บันทึกลง Google Sheets สำเร็จเรียบร้อย!', 'success');
+            loadContracts();
+          })
+          .withFailureHandler(function(err) {
+            showToast('บันทึกผิดพลาด: ' + err, 'error');
+          })[apiMethod](contract);
+      } else {
+        if (isNew) contracts.unshift(contract);
+        else {
+          const idx = contracts.findIndex(x => x.id === id);
+          if (idx !== -1) contracts[idx] = contract;
+        }
+        saveLocallyIfFallback();
+        renderAll();
+        showToast('บันทึกสัญญาเรียบร้อยแล้ว (โหมดออฟไลน์)', 'success');
+      }
+
+      closeContractModal();
+    }
+
+    function handleDeleteContract(id) {
+      const c = contracts.find(x => x.id === id);
+      if (!c) return;
+      if (!confirm(`ยืนยันการลบสัญญาเลขที่ ${c.contractNo} (${c.borrowerName}) หรือไม่?`)) return;
+
+      if (isGasEnv) {
+        showToast('กำลังลบข้อมูลใน Google Sheets...', 'info');
+        google.script.run
+          .withSuccessHandler(function() {
+            showToast('ลบสัญญาสำเร็จ', 'success');
+            loadContracts();
+          })
+          .withFailureHandler(function(err) {
+            showToast('ลบไม่สำเร็จ: ' + err, 'error');
+          })
+          .apiDeleteContract(id);
+      } else {
+        contracts = contracts.filter(x => x.id !== id);
+        saveLocallyIfFallback();
+        renderAll();
+        showToast('ลบสัญญาเรียบร้อยแล้ว', 'success');
+      }
+    }
+
+    // -------------------------------------------------------------------------
+    // Repayments Modal Logic
+    // -------------------------------------------------------------------------
+
+    function openRepaymentModal(contractId) {
+      const c = contracts.find(x => x.id === contractId);
+      if (!c) return;
+
+      currentContractForRepayment = c;
+      const sum = calculateContractSummary(c);
+
+      document.getElementById('repaymentContractSubtitle').textContent = `สัญญาเลขที่: ${c.contractNo} · ผู้ยืม: ${c.borrowerName}`;
+      document.getElementById('repaymentContractId').value = c.id;
+      document.getElementById('repLoanAmount').textContent = '฿' + sum.loanAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+      document.getElementById('repTotalPaid').textContent = '฿' + sum.totalSettled.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+      document.getElementById('repRemainingDebt').textContent = '฿' + sum.remainingDebt.toLocaleString('th-TH', { minimumFractionDigits: 2 });
+
+      document.getElementById('repDate').value = new Date().toISOString().split('T')[0];
+      document.getElementById('repCashAmount').value = sum.remainingDebt > 0 ? sum.remainingDebt : '0';
+      document.getElementById('repReceiptNo').value = '';
+      document.getElementById('repVoucherAmount').value = '0';
+      document.getElementById('repVoucherNo').value = '';
+      document.getElementById('repNotes').value = '';
+
+      renderRepaymentsList(c);
+
+      document.getElementById('repaymentModal').classList.remove('hidden');
+      document.getElementById('repaymentModal').classList.add('flex');
+    }
+
+    function closeRepaymentModal() {
+      document.getElementById('repaymentModal').classList.add('hidden');
+      document.getElementById('repaymentModal').classList.remove('flex');
+      currentContractForRepayment = null;
+    }
+
+    function renderRepaymentsList(c) {
+      const container = document.getElementById('existingRepaymentsList');
+      if (!c.repayments || c.repayments.length === 0) {
+        container.innerHTML = '<div class="text-slate-400 italic">ยังไม่มีประวัติการส่งใช้คืน</div>';
+        return;
+      }
+
+      container.innerHTML = c.repayments.map((r, i) => `
+        <div class="p-2 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between">
+          <div>
+            <div class="font-medium text-slate-800">ครั้งที่ ${i + 1} (${formatDateThai(r.repaymentDate)})</div>
+            <div class="text-[11px] text-slate-500">
+              เงินสด: ฿${(Number(r.cashAmount) || 0).toLocaleString()} (ใบเสร็จ: ${r.receiptNo || '-'}) · 
+              ใบสำคัญ: ฿${(Number(r.voucherAmount) || 0).toLocaleString()} (เลขที่: ${r.voucherNo || '-'})
+            </div>
+          </div>
+          <button onclick="handleDeleteRepayment('${r.id}')" class="text-rose-500 hover:text-rose-700 text-xs px-2 py-1">
+            ✕ ลบ
+          </button>
+        </div>
+      `).join('');
+    }
+
+    function handleSaveRepayment(e) {
+      e.preventDefault();
+      if (!currentContractForRepayment) return;
+
+      const cash = Number(document.getElementById('repCashAmount').value) || 0;
+      const voucher = Number(document.getElementById('repVoucherAmount').value) || 0;
+
+      if (cash <= 0 && voucher <= 0) {
+        alert('กรุณากรอกยอดส่งใช้คืน (เงินสด หรือ ใบสำคัญคู่จ่าย) อย่างน้อย 1 รายการ');
+        return;
+      }
+
+      const record = {
+        id: 'rep-' + Date.now(),
+        contractId: currentContractForRepayment.id,
+        repaymentDate: document.getElementById('repDate').value,
+        cashAmount: cash,
+        receiptNo: document.getElementById('repReceiptNo').value.trim(),
+        voucherAmount: voucher,
+        voucherNo: document.getElementById('repVoucherNo').value.trim(),
+        totalSettled: cash + voucher,
+        notes: document.getElementById('repNotes').value.trim(),
+        verified: true
+      };
+
+      if (!Array.isArray(currentContractForRepayment.repayments)) {
+        currentContractForRepayment.repayments = [];
+      }
+      currentContractForRepayment.repayments.push(record);
+      currentContractForRepayment.updatedAt = new Date().toISOString();
+
+      if (isGasEnv) {
+        showToast('กำลังบันทึกการส่งใช้ลง Google Sheets...', 'info');
+        google.script.run
+          .withSuccessHandler(function() {
+            showToast('บันทึกการส่งใช้คืนสำเร็จ', 'success');
+            loadContracts();
+          })
+          .withFailureHandler(function(err) {
+            showToast('เกิดข้อผิดพลาด: ' + err, 'error');
+          })
+          .apiUpdateContract(currentContractForRepayment);
+      } else {
+        saveLocallyIfFallback();
+        renderAll();
+        showToast('บันทึกการส่งใช้คืนสำเร็จ (ออฟไลน์)', 'success');
+      }
+
+      closeRepaymentModal();
+    }
+
+    function handleDeleteRepayment(repaymentId) {
+      if (!currentContractForRepayment) return;
+      if (!confirm('ยืนยันลบรายการส่งใช้คืนนี้หรือไม่?')) return;
+
+      currentContractForRepayment.repayments = currentContractForRepayment.repayments.filter(r => r.id !== repaymentId);
+
+      if (isGasEnv) {
+        google.script.run
+          .withSuccessHandler(function() {
+            showToast('ลบรายการส่งใช้สำเร็จ', 'success');
+            loadContracts();
+          })
+          .apiUpdateContract(currentContractForRepayment);
+      } else {
+        saveLocallyIfFallback();
+        renderAll();
+      }
+
+      renderRepaymentsList(currentContractForRepayment);
+    }
+
+    // -------------------------------------------------------------------------
+    // Demand Letter Modal (หนังสือทวงหนี้ ตราครุฑ)
+    // -------------------------------------------------------------------------
+
+    function openDemandLetterModal(contractId) {
+      const c = contracts.find(x => x.id === contractId);
+      if (!c) return;
+
+      const sum = calculateContractSummary(c);
+      const container = document.getElementById('demandLetterContent');
+
+      container.innerHTML = `
+        <!-- Garuda Header -->
+        <div class="text-center mb-6">
+          <svg class="w-16 h-16 mx-auto mb-2 text-slate-800" viewBox="0 0 200 200" fill="currentColor">
+            <path d="M100 15 C85 30 70 50 60 70 C50 60 40 55 30 58 C25 60 25 70 35 75 C45 80 55 82 65 85 C55 95 45 110 40 130 C45 130 55 125 65 115 C70 125 78 135 88 140 C85 150 80 165 75 180 C85 178 95 170 100 160 C105 170 115 178 125 180 C120 165 115 150 112 140 C122 135 130 125 135 115 C145 125 155 130 160 130 C155 110 145 95 135 85 C145 82 155 80 165 75 C175 70 175 60 170 58 C160 55 150 60 140 70 C130 50 115 30 100 15 Z"/>
+          </svg>
+          <h2 class="text-2xl font-bold font-prompt tracking-wider">บันทึกข้อความ</h2>
+        </div>
+
+        <div class="space-y-3">
+          <div class="grid grid-cols-2 gap-4 pb-2 border-b border-slate-300">
+            <div><strong>ส่วนราชการ:</strong> ${escapeHtml(c.department || 'งานการเงินและบัญชี')}</div>
+            <div><strong>โทร:</strong> 0-XXXX-XXXX ต่อ XXX</div>
+          </div>
+          <div class="grid grid-cols-2 gap-4 pb-2 border-b border-slate-300">
+            <div><strong>ที่:</strong> ฝบท.ทวงหนี้/${new Date().getFullYear() + 543}</div>
+            <div><strong>วันที่:</strong> ${formatDateThai(new Date())}</div>
+          </div>
+          <div class="pb-2 border-b border-slate-300">
+            <strong>เรื่อง:</strong> เตือนให้ส่งใช้เงินยืมราชการเกินกำหนดสัญญา
+          </div>
+          <div>
+            <strong>เรียน:</strong> ${escapeHtml(c.borrowerName)} (ตำแหน่ง ${escapeHtml(c.position || '-')})
+          </div>
+
+          <div class="pt-3 text-justify leading-relaxed text-sm indent-8">
+            ตามที่ท่านได้ทำสัญญาการยืมเงินราชการ เลขที่ <strong>${escapeHtml(c.contractNo)}</strong> 
+            ลงวันที่ ${formatDateThai(c.contractDate)} เพื่อเป็นค่าใช้จ่ายในการ <em>${escapeHtml(c.purpose)}</em> 
+            เป็นจำนวนเงินทั้งสิ้น <strong>${sum.loanAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 })} บาท</strong> 
+            และได้รับเงินยืมไปเมื่อวันที่ ${formatDateThai(c.disbursementDate)} โดยมีกำหนดส่งใช้คืนภายในวันที่ 
+            <strong>${formatDateThai(c.dueDate)}</strong> นั้น
+          </div>
+
+          <div class="pt-2 text-justify leading-relaxed text-sm indent-8">
+            บัดนี้ ปรากฏว่าล่วงพ้นกำหนดเวลาส่งใช้เงินยืมตามสัญญาดังกล่าวมาแล้วเป็นเวลา 
+            <strong class="text-rose-700 underline font-semibold">${sum.daysOverdue} วัน</strong> 
+            โดยท่านยังมียอดหนี้เงินยืมค้างชำระเป็นจำนวนเงิน 
+            <strong class="text-rose-700 font-bold text-base underline">฿${sum.remainingDebt.toLocaleString('th-TH', { minimumFractionDigits: 2 })} บาท</strong> 
+            (${bahtText(sum.remainingDebt)})
+          </div>
+
+          <div class="pt-2 text-justify leading-relaxed text-sm indent-8">
+            อาศัยอำนาจตามระเบียบกระทรวงการคลังว่าด้วยการเบิกจ่ายเงินจากคลัง การเก็บรักษาเงิน และการนำเงินส่งคลัง พ.ศ. 2562 
+            จึงขอให้ท่านดำเนินการนำใบสำคัญคู่จ่ายพร้อมเงินสดที่เหลือจ่าย (ถ้ามี) มาส่งใช้คืน ณ งานการเงินและบัญชี 
+            <strong>ภายใน 7 วัน นับตั้งแต่วันที่ได้รับบันทึกข้อความฉบับนี้</strong> หากพ้นกำหนดดังกล่าว ส่วนราชการมีความจำเป็นต้องดำเนินการตามระเบียบราชการต่อไป
+          </div>
+
+          <div class="pt-8 text-right pr-12">
+            <div>จึงเรียนมาเพื่อโปรดดำเนินการโดยด่วน</div>
+            <div class="mt-14">(............................................................)</div>
+            <div class="mt-1">หัวหน้ากลุ่มงานการเงินและบัญชี</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('demandLetterModal').classList.remove('hidden');
+      document.getElementById('demandLetterModal').classList.add('flex');
+    }
+
+    function closeDemandLetterModal() {
+      document.getElementById('demandLetterModal').classList.add('hidden');
+      document.getElementById('demandLetterModal').classList.remove('flex');
+    }
+
+    // -------------------------------------------------------------------------
+    // Form 8500 Full Print View
+    // -------------------------------------------------------------------------
+
+    function openForm8500Print() {
+      const container = document.getElementById('form8500PrintContent');
+      const year = document.getElementById('fiscalYearFilter').value;
+
+      container.innerHTML = `
+        <div class="text-center mb-6">
+          <h2 class="text-xl font-bold font-prompt">ทะเบียนคุมเงินยืม (แบบ 8500)</h2>
+          <p class="text-xs text-slate-600">
+            เงินงบประมาณและเงินนอกงบประมาณ · ประจำปีงบประมาณ พ.ศ. ${year === 'all' ? '2568' : year}
+          </p>
+        </div>
+
+        <table class="w-full border-collapse border border-black text-[10px]">
+          <thead>
+            <tr class="bg-slate-100 text-center font-bold">
+              <th class="border border-black p-1 w-8">ที่</th>
+              <th class="border border-black p-1 w-20">เลขที่สัญญา</th>
+              <th class="border border-black p-1 w-16">วันเดือนปี</th>
+              <th class="border border-black p-1 min-w-[120px]">ชื่อผู้ยืม</th>
+              <th class="border border-black p-1 min-w-[140px]">รายการ / วัตถุประสงค์</th>
+              <th class="border border-black p-1 w-20">จำนวนเงินยืม</th>
+              <th class="border border-black p-1 w-16">กำหนดส่งใช้</th>
+              <th class="border border-black p-1 w-16">วันส่งใช้</th>
+              <th class="border border-black p-1 w-20">ใบสำคัญ</th>
+              <th class="border border-black p-1 w-16">เงินสด</th>
+              <th class="border border-black p-1 w-20">รวมส่งใช้</th>
+              <th class="border border-black p-1 w-20">คงเหลือ</th>
+              <th class="border border-black p-1 w-16">หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${contracts.map((c, idx) => {
+              const sum = calculateContractSummary(c);
+              const lastRep = (c.repayments && c.repayments.length > 0) ? c.repayments[c.repayments.length - 1] : null;
+              return `
+                <tr>
+                  <td class="border border-black p-1 text-center">${idx + 1}</td>
+                  <td class="border border-black p-1 text-center font-bold">${escapeHtml(c.contractNo)}</td>
+                  <td class="border border-black p-1 text-center">${formatDateThai(c.contractDate, true)}</td>
+                  <td class="border border-black p-1">${escapeHtml(c.borrowerName)}</td>
+                  <td class="border border-black p-1">${escapeHtml(c.purpose)}</td>
+                  <td class="border border-black p-1 text-right font-mono">${sum.loanAmount.toLocaleString('th-TH', { minimumFractionDigits: 2 })}</td>
+                  <td class="border border-black p-1 text-center">${formatDateThai(c.dueDate, true)}</td>
+                  <td class="border border-black p-1 text-center">${lastRep ? formatDateThai(lastRep.repaymentDate, true) : '-'}</td>
+                  <td class="border border-black p-1 text-right font-mono">${sum.totalVoucher > 0 ? sum.totalVoucher.toLocaleString('th-TH', { minimumFractionDigits: 2 }) : '-'}</td>
+                  <td class="border border-black p-1 text-right font-mono">${sum.totalCash > 0 ? sum.totalCash.toLocaleString('th-TH', { minimumFractionDigits: 2 }) : '-'}</td>
+                  <td class="border border-black p-1 text-right font-mono">${sum.totalSettled > 0 ? sum.totalSettled.toLocaleString('th-TH', { minimumFractionDigits: 2 }) : '-'}</td>
+                  <td class="border border-black p-1 text-right font-mono font-bold">${sum.remainingDebt > 0 ? sum.remainingDebt.toLocaleString('th-TH', { minimumFractionDigits: 2 }) : '-'}</td>
+                  <td class="border border-black p-1 text-center">${escapeHtml(c.remarks || (sum.isOverdue ? 'เกินกำหนด' : ''))}</td>
+                </tr>
+              `;
+            }).join('')}
+          </tbody>
+        </table>
+
+        <div class="grid grid-cols-2 text-center mt-12 text-xs">
+          <div>
+            <div>ลงชื่อ..............................................................ผู้บันทึก</div>
+            <div class="mt-1">(..............................................................)</div>
+            <div class="mt-1">เจ้าหน้าที่การเงินและบัญชี</div>
+          </div>
+          <div>
+            <div>ลงชื่อ..............................................................ผู้ตรวจทาน</div>
+            <div class="mt-1">(..............................................................)</div>
+            <div class="mt-1">หัวหน้าส่วนราชการ / ผู้อำนวยการกองคลัง</div>
+          </div>
+        </div>
+      `;
+
+      document.getElementById('form8500Modal').classList.remove('hidden');
+      document.getElementById('form8500Modal').classList.add('flex');
+    }
+
+    function closeForm8500Print() {
+      document.getElementById('form8500Modal').classList.add('hidden');
+      document.getElementById('form8500Modal').classList.remove('flex');
+    }
+
+    // -------------------------------------------------------------------------
+    // Utilities & Formatters
+    // -------------------------------------------------------------------------
+
+    function formatDateThai(val, shortYear = false) {
+      if (!val) return '-';
+      const d = new Date(val);
+      if (isNaN(d.getTime())) return String(val);
+
+      const months = ['ม.ค.', 'ก.พ.', 'มี.ค.', 'เม.ย.', 'พ.ค.', 'มิ.ย.', 'ก.ค.', 'ส.ค.', 'ก.ย.', 'ต.ค.', 'พ.ย.', 'ธ.ค.'];
+      const year = (d.getFullYear() + 543);
+      const displayYear = shortYear ? String(year).slice(-2) : year;
+      return `${d.getDate()} ${months[d.getMonth()]} ${displayYear}`;
+    }
+
+    function bahtText(num) {
+      if (num === 0) return 'ศูนย์บาทถ้วน';
+      const digits = ['ศูนย์', 'หนึ่ง', 'สอง', 'สาม', 'สี่', 'ห้า', 'หก', 'เจ็ด', 'แปด', 'เก้า'];
+      const positions = ['', 'สิบ', 'ร้อย', 'พัน', 'หมื่น', 'แสน', 'ล้าน'];
+
+      const parts = Number(num).toFixed(2).split('.');
+      let integerPart = parts[0];
+      let decimalPart = parts[1];
+
+      function convertPart(str) {
+        let res = '';
+        const len = str.length;
+        for (let i = 0; i < len; i++) {
+          const d = Number(str[i]);
+          const pos = len - i - 1;
+          if (d !== 0) {
+            if (pos === 0 && d === 1 && len > 1) res += 'เอ็ด';
+            else if (pos === 1 && d === 2) res += 'ยี่สิบ';
+            else if (pos === 1 && d === 1) res += 'สิบ';
+            else res += digits[d] + positions[pos];
+          }
+        }
+        return res;
+      }
+
+      let text = convertPart(integerPart) + 'บาท';
+      if (Number(decimalPart) === 0) {
+        text += 'ถ้วน';
+      } else {
+        text += convertPart(decimalPart) + 'สตางค์';
+      }
+      return text;
+    }
+
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function showToast(msg, type = 'success') {
+      const toast = document.getElementById('toast');
+      const box = document.getElementById('toastBox');
+      const text = document.getElementById('toastMessage');
+      const icon = document.getElementById('toastIcon');
+
+      text.textContent = msg;
+
+      if (type === 'success') {
+        box.className = 'px-4 py-2.5 rounded-xl shadow-lg border text-xs font-medium flex items-center gap-2 bg-emerald-800 text-white border-emerald-700';
+        icon.textContent = '✓';
+      } else if (type === 'error') {
+        box.className = 'px-4 py-2.5 rounded-xl shadow-lg border text-xs font-medium flex items-center gap-2 bg-rose-800 text-white border-rose-700';
+        icon.textContent = '✕';
+      } else {
+        box.className = 'px-4 py-2.5 rounded-xl shadow-lg border text-xs font-medium flex items-center gap-2 bg-slate-900 text-white border-slate-700';
+        icon.textContent = 'ℹ';
+      }
+
+      toast.classList.remove('translate-y-12', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+
+      setTimeout(() => {
+        toast.classList.add('translate-y-12', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+
+    function getSampleInitialData() {
+      return [
+        {
+          id: 'sample-1',
+          contractNo: 'ย.01/2568',
+          contractDate: '2024-10-05',
+          fiscalYear: 2568,
+          borrowerName: 'นางสาวสมใจ นามสมมุติ',
+          position: 'นักวิชาการเงินและบัญชีชำนาญการ',
+          department: 'กลุ่มงานการเงินและบัญชี',
+          purpose: 'ค่าใช้จ่ายในการเดินทางไปปฏิบัติราชการประชุมชี้แจงระเบียบการเงินการคลัง ณ โรงแรมเซ็นทารา',
+          budgetType: 'เงินงบประมาณ (เงินรายจ่ายประจำปี)',
+          loanAmount: 18500,
+          disbursementDate: '2024-10-06',
+          dueDate: '2024-11-05',
+          remarks: 'ส่งใช้ครบถ้วนแล้ว',
+          repayments: [
+            {
+              id: 'rep-sample-1',
+              contractId: 'sample-1',
+              repaymentDate: '2024-10-25',
+              cashAmount: 1200,
+              receiptNo: 'บส.14/2568',
+              voucherAmount: 17300,
+              voucherNo: 'บช.89/2568',
+              totalSettled: 18500,
+              verified: true
+            }
+          ]
+        },
+        {
+          id: 'sample-2',
+          contractNo: 'ย.02/2568',
+          contractDate: '2024-11-10',
+          fiscalYear: 2568,
+          borrowerName: 'นายประสิทธิ์ พัฒนาการ',
+          position: 'เจ้าพนักงานธุรการปฏิบัติงาน',
+          department: 'ฝ่ายอำนวยการ',
+          purpose: 'ยืมเงินเพื่อเป็นค่าใช้จ่ายในการจัดฝึกอบรมเชิงปฏิบัติการพัฒนาบุคลากร',
+          budgetType: 'เงินนอกงบประมาณ',
+          loanAmount: 45000,
+          disbursementDate: '2024-11-12',
+          dueDate: '2024-12-12',
+          remarks: 'ค้างชำระเกินกำหนด 30 วัน',
+          repayments: [
+            {
+              id: 'rep-sample-2',
+              contractId: 'sample-2',
+              repaymentDate: '2024-12-01',
+              cashAmount: 0,
+              voucherAmount: 25000,
+              voucherNo: 'บช.115/2568',
+              totalSettled: 25000,
+              verified: true
+            }
+          ]
+        }
+      ];
+    }
+  </script>
+</body>
+</html>

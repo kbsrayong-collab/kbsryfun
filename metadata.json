@@ -1,0 +1,8 @@
+{
+  "name": "gov-loan-7175a7fc - ระบบทะเบียนคุมสัญญายืมเงินราชการ",
+  "description": "ทะเบียนคุมเงินยืม เงินนอกงบประมาณ",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

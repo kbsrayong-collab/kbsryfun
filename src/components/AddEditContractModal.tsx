@@ -32,7 +32,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
   const [fiscalYear, setFiscalYear] = useState<number>(2570);
   const [purpose, setPurpose] = useState('');
   const [loanType, setLoanType] = useState<LoanType>('travel');
-  const [budgetType, setBudgetType] = useState<BudgetType>('เงินกองทุนพัฒนาสหกรณ์');
+  const [budgetType, setBudgetType] = useState<BudgetType>('');
   const [loanAmount, setLoanAmount] = useState<string>('');
   const [disbursementDate, setDisbursementDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -66,7 +66,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
       setFiscalYear(2570);
       setPurpose('');
       setLoanType('travel');
-      setBudgetType('เงินกองทุนพัฒนาสหกรณ์');
+      setBudgetType('');
       setLoanAmount('');
       setDisbursementDate(today);
       setDueDate(calculateDefaultDueDate(today, 'travel'));

@@ -14,6 +14,7 @@ import {
 } from 'lucide-react';
 import { AppSheetConfig, AppsScriptConfig } from '../types/loan';
 import { AppSettings, COLOR_THEMES } from '../types/settings';
+import { BanknoteLogo } from './BanknoteLogo';
 
 export type NavTab = 'overview' | 'contracts' | 'overdue' | 'appscript' | 'appsheet' | 'settings';
 
@@ -126,31 +127,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         {/* Sidebar Header / Brand */}
         <div className="h-16 px-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/60">
           <div className="flex items-center gap-3 min-w-0 overflow-hidden">
-            <div 
-              className="w-10 h-10 rounded-xl text-white flex items-center justify-center shadow-xs shrink-0 ring-2 ring-white/20 transition-all hover:brightness-105"
-              style={{ backgroundColor: currentTheme.accentHex }}
-              title="ทะเบียนคุมเงินยืมราชการ"
-            >
-              <svg 
-                className="w-5 h-5 text-white" 
-                viewBox="0 0 24 24" 
-                fill="none" 
-                stroke="currentColor" 
-                strokeWidth="1.8" 
-                strokeLinecap="round" 
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                {/* Modern Official Thai Banknote with Baht Center Medallion */}
-                <rect x="2" y="5" width="20" height="14" rx="2.5" />
-                <circle cx="12" cy="12" r="3.6" strokeWidth="1.5" />
-                <path d="M12 9.5v5M10.8 11h2.2a1 1 0 0 1 0 2h-2.2" strokeWidth="1.5" />
-                <line x1="5.5" y1="9" x2="5.5" y2="9.01" strokeWidth="2.5" />
-                <line x1="5.5" y1="15" x2="5.5" y2="15.01" strokeWidth="2.5" />
-                <line x1="18.5" y1="9" x2="18.5" y2="9.01" strokeWidth="2.5" />
-                <line x1="18.5" y1="15" x2="18.5" y2="15.01" strokeWidth="2.5" />
-              </svg>
-            </div>
+            <BanknoteLogo 
+              className="w-10 h-10 rounded-xl"
+              iconClassName="w-5 h-5 text-white"
+              bgColor={currentTheme.accentHex} 
+              title="ทะเบียนคุมเงินยืมราชการ" 
+            />
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0 flex-1">
                 <h1 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-tight truncate">

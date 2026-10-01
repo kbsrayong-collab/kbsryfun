@@ -14,6 +14,7 @@ import {
 import { NavTab } from './Sidebar';
 import { AppSettings, COLOR_THEMES } from '../types/settings';
 import { useAuth } from '../context/AuthContext';
+import { BanknoteLogo } from './BanknoteLogo';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -91,6 +92,16 @@ export const Header: React.FC<HeaderProps> = ({
                 <PanelLeftClose className="w-5 h-5 text-slate-600 dark:text-slate-400" />
               )}
             </button>
+
+            {/* Website Logo - Banknote Emblem identical to sidebar */}
+            <div className="flex items-center shrink-0">
+              <BanknoteLogo 
+                className="w-8.5 h-8.5 rounded-xl shadow-xs" 
+                iconClassName="w-4.5 h-4.5 text-white" 
+                bgColor={currentTheme.accentHex} 
+                title="ระบบทะเบียนคุมสัญญายืมเงินราชการ"
+              />
+            </div>
 
             {/* Page Title & Breadcrumb */}
             <div className="min-w-0">

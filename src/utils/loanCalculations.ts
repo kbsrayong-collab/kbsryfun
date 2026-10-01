@@ -258,46 +258,46 @@ export function getStatusBadgeStyle(status: LoanStatus): {
   switch (status) {
     case 'settled':
       return {
-        bg: 'bg-emerald-50 text-emerald-800',
-        text: 'text-emerald-800',
-        border: 'border-emerald-200',
+        bg: 'bg-emerald-50 dark:bg-emerald-950/50 text-emerald-800 dark:text-emerald-300',
+        text: 'text-emerald-800 dark:text-emerald-300',
+        border: 'border-emerald-200 dark:border-emerald-800',
         dot: 'bg-emerald-500',
       };
     case 'overdue':
       return {
-        bg: 'bg-rose-50 text-rose-800',
-        text: 'text-rose-800',
-        border: 'border-rose-200',
+        bg: 'bg-rose-50 dark:bg-rose-950/50 text-rose-800 dark:text-rose-300',
+        text: 'text-rose-800 dark:text-rose-300',
+        border: 'border-rose-200 dark:border-rose-800',
         dot: 'bg-rose-500',
       };
     case 'due_soon':
       return {
-        bg: 'bg-amber-50 text-amber-800',
-        text: 'text-amber-800',
-        border: 'border-amber-200',
+        bg: 'bg-amber-50 dark:bg-amber-950/50 text-amber-800 dark:text-amber-300',
+        text: 'text-amber-800 dark:text-amber-300',
+        border: 'border-amber-200 dark:border-amber-800',
         dot: 'bg-amber-500',
       };
     case 'partial':
       return {
-        bg: 'bg-sky-50 text-sky-800',
-        text: 'text-sky-800',
-        border: 'border-sky-200',
+        bg: 'bg-sky-50 dark:bg-sky-950/50 text-sky-800 dark:text-sky-300',
+        text: 'text-sky-800 dark:text-sky-300',
+        border: 'border-sky-200 dark:border-sky-800',
         dot: 'bg-sky-500',
       };
     case 'pending_disbursement':
       return {
-        bg: 'bg-slate-100 text-slate-700',
-        text: 'text-slate-700',
-        border: 'border-slate-200',
+        bg: 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300',
+        text: 'text-slate-700 dark:text-slate-300',
+        border: 'border-slate-200 dark:border-slate-700',
         dot: 'bg-slate-400',
       };
     case 'active':
     default:
       return {
-        bg: 'bg-blue-50 text-blue-800',
-        text: 'text-blue-800',
-        border: 'border-blue-200',
-        dot: 'bg-blue-500',
+        bg: 'bg-indigo-50 dark:bg-indigo-950/50 text-indigo-800 dark:text-indigo-300',
+        text: 'text-indigo-800 dark:text-indigo-300',
+        border: 'border-indigo-200 dark:border-indigo-800',
+        dot: 'bg-indigo-500',
       };
   }
 }

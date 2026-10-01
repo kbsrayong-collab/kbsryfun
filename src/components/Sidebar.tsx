@@ -125,19 +125,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
         `}
       >
         {/* Sidebar Header / Brand */}
-        <div className="h-16 px-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/70 dark:bg-slate-800/60">
+        <div className="h-16 px-3.5 border-b border-slate-200 dark:border-slate-800 flex items-center justify-between shrink-0 bg-slate-50/60 dark:bg-slate-800/40">
           <div className="flex items-center gap-3 min-w-0 overflow-hidden">
             <BanknoteLogo 
-              className="w-10 h-10 rounded-xl"
-              iconClassName="w-5 h-5 text-white"
+              className="w-10 h-10 rounded-xl shadow-xs" 
+              iconClassName="w-5 h-5 text-white" 
               bgColor={currentTheme.accentHex} 
               title="ทะเบียนคุมเงินยืมราชการ" 
             />
             {(!isCollapsed || isMobileOpen) && (
               <div className="min-w-0 flex-1">
-                <h1 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-tight truncate">
+                <h1 className="text-sm font-bold text-slate-800 dark:text-white tracking-tight leading-tight truncate">
                   ทะเบียนคุมเงินยืม
                 </h1>
+                <p className="text-2xs text-slate-500 dark:text-slate-400 truncate">เงินนอกงบประมาณ</p>
               </div>
             )}
           </div>
@@ -145,7 +146,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Close button on mobile */}
           <button
             onClick={() => setIsMobileOpen(false)}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-lg md:hidden transition-colors"
+            className="p-1.5 text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg md:hidden transition-colors"
             title="ปิดเมนู"
           >
             <X className="w-5 h-5" />
@@ -154,7 +155,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* Collapse/Expand Toggle on Desktop */}
           <button
             onClick={() => setIsCollapsed(prev => !prev)}
-            className={`hidden md:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/80 dark:hover:bg-slate-800 transition-colors shrink-0 ${
+            className={`hidden md:flex items-center justify-center w-7 h-7 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors shrink-0 ${
               isCollapsed ? 'mx-auto' : ''
             }`}
             title={isCollapsed ? 'ขยายสไลด์บาร์ (Expand)' : 'ย่อสไลด์บาร์ (Collapse)'}
@@ -174,8 +175,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="flex flex-col items-center gap-2">
               <button
                 onClick={onOpenAddModal}
-                style={{ backgroundColor: currentTheme.accentHex }}
-                className="w-10 h-10 rounded-xl text-white flex items-center justify-center transition-opacity hover:opacity-90 shadow-2xs group relative cursor-pointer"
+                className={`w-10 h-10 rounded-xl ${currentTheme.primaryColor} ${currentTheme.primaryHover} text-white flex items-center justify-center transition-all hover:scale-105 shadow-md shadow-emerald-600/20 group relative cursor-pointer`}
                 title="บันทึกสัญญายืมเงินใหม่"
               >
                 <Plus className="w-5 h-5" />
@@ -185,10 +185,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
               </button>
               <button
                 onClick={onExportCSV}
-                className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-colors border border-slate-200 dark:border-slate-700 group relative cursor-pointer"
+                className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 flex items-center justify-center transition-colors border border-slate-200 dark:border-slate-700 group relative cursor-pointer shadow-xs"
                 title="ส่งออก CSV สำหรับ AppSheet / Excel"
               >
-                <Download className="w-4 h-4" style={{ color: currentTheme.accentHex }} />
+                <Download className="w-4 h-4" />
                 <span className="absolute left-full ml-2 px-2 py-1 bg-slate-900 text-white text-2xs rounded shadow-lg whitespace-nowrap opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50">
                   ส่งออก CSV
                 </span>
@@ -198,17 +198,16 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-2">
               <button
                 onClick={onOpenAddModal}
-                style={{ backgroundColor: currentTheme.accentHex }}
-                className="w-full py-2 px-3 text-white hover:opacity-90 rounded-xl text-xs font-semibold flex items-center justify-center gap-2 transition-opacity shadow-xs cursor-pointer"
+                className={`w-full py-2.5 px-3 ${currentTheme.primaryColor} ${currentTheme.primaryHover} text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2 transition-all shadow-md shadow-emerald-600/20 cursor-pointer`}
               >
                 <Plus className="w-4 h-4" />
                 <span>บันทึกสัญญาใหม่</span>
               </button>
               <button
                 onClick={onExportCSV}
-                className="w-full py-1.5 px-3 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700/80 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
+                className="w-full py-1.5 px-3 bg-slate-100 dark:bg-slate-800/80 hover:bg-slate-200 dark:hover:bg-slate-700 text-slate-700 dark:text-slate-200 border border-slate-200 dark:border-slate-700/80 rounded-xl text-xs font-medium flex items-center justify-center gap-1.5 transition-colors shadow-2xs cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5" style={{ color: currentTheme.accentHex }} />
+                <Download className="w-3.5 h-3.5 text-slate-500 dark:text-slate-400" />
                 <span>ส่งออกรายงาน CSV</span>
               </button>
             </div>
@@ -235,39 +234,28 @@ export const Sidebar: React.FC<SidebarProps> = ({
                   ${isCollapsed && !isMobileOpen ? 'justify-center p-2.5' : 'px-3 py-2.5 text-left'}
                   ${
                     isActive
-                      ? 'shadow-2xs font-semibold'
-                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100/80 dark:hover:bg-slate-800/80 hover:text-slate-900 dark:hover:text-white border border-transparent'
+                      ? `${currentTheme.primaryColor} text-white shadow-md shadow-emerald-600/20 font-bold`
+                      : 'text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800 hover:text-slate-900 dark:hover:text-slate-100 border border-transparent'
                   }
                 `}
-                style={
-                  isActive
-                    ? {
-                        backgroundColor: settings.themeMode === 'dark' ? '#1e293b' : `${currentTheme.accentHex}14`,
-                        color: currentTheme.accentHex,
-                        borderColor: `${currentTheme.accentHex}40`,
-                        borderWidth: 1,
-                      }
-                    : undefined
-                }
                 title={isCollapsed && !isMobileOpen ? item.label : undefined}
               >
                 <div className="relative shrink-0">
                   <Icon
                     className={`w-5 h-5 transition-colors ${
-                      isActive ? '' : 'text-slate-400 dark:text-slate-500 group-hover:text-slate-600 dark:group-hover:text-slate-300'
+                      isActive ? 'text-white' : 'text-slate-400 group-hover:text-slate-600 dark:group-hover:text-slate-300'
                     }`}
-                    style={isActive ? { color: currentTheme.accentHex } : undefined}
                   />
                   {/* Small badge dot on icon when collapsed */}
                   {isCollapsed && !isMobileOpen && item.badge && item.id === 'overdue' && (
-                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-600 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
+                    <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-rose-500 rounded-full ring-2 ring-white dark:ring-slate-900 animate-pulse" />
                   )}
                 </div>
 
                 {(!isCollapsed || isMobileOpen) && (
                   <div className="flex-1 min-w-0 flex items-center justify-between">
                     <div className="truncate">
-                      <div className="text-xs leading-tight truncate">{item.label}</div>
+                      <div className="text-xs leading-tight truncate font-semibold">{item.label}</div>
                       <div className="text-2xs opacity-75 font-normal leading-tight truncate">
                         {item.description}
                       </div>
@@ -275,7 +263,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {item.badge && (
                       <span
                         className={`text-2xs font-bold px-1.5 py-0.5 rounded-full font-mono tabular-nums shrink-0 ml-2 ${
-                          item.badgeColor || 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300'
+                          isActive
+                            ? 'bg-white/20 text-white'
+                            : 'bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-400'
                         }`}
                       >
                         {item.badge}
@@ -301,12 +291,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
         </div>
 
         {/* Sidebar Footer: AppSheet DB Status & Settings summary */}
-        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/40 shrink-0">
+        <div className="p-3 border-t border-slate-200 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50 shrink-0">
           {isCollapsed && !isMobileOpen ? (
             <div className="flex flex-col items-center gap-2">
               <button
                 onClick={() => handleTabClick('settings')}
-                className="w-10 h-10 rounded-xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 flex items-center justify-center transition-colors group relative shadow-2xs cursor-pointer"
+                className="w-10 h-10 rounded-xl bg-slate-100 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center transition-colors group relative shadow-2xs cursor-pointer"
                 title="การตั้งค่าระบบและธีม"
               >
                 <Settings className="w-4 h-4" />
@@ -317,7 +307,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
               <button
                 onClick={() => setIsCollapsed(false)}
-                className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200 dark:hover:bg-slate-800 flex items-center justify-center transition-colors mt-1 cursor-pointer"
+                className="w-8 h-8 rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 flex items-center justify-center transition-colors mt-1 cursor-pointer"
                 title="ขยายสไลด์บาร์"
               >
                 <ChevronRight className="w-4 h-4" />
@@ -327,24 +317,24 @@ export const Sidebar: React.FC<SidebarProps> = ({
             <div className="space-y-2">
               <div 
                 onClick={() => handleTabClick('appscript')}
-                className="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 hover:border-emerald-300 dark:hover:border-emerald-600 cursor-pointer transition-colors shadow-2xs group"
+                className="p-2.5 bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700/80 hover:border-slate-300 dark:hover:border-slate-600 cursor-pointer transition-colors shadow-2xs group"
                 title="คลิกเพื่อจัดการการเชื่อมต่อ Google Apps Script"
               >
                 <div className="flex items-center justify-between text-2xs mb-1">
                   <span className="text-slate-500 dark:text-slate-400 font-medium">Apps Script API</span>
                   {isConnected ? (
-                    <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold">
+                    <span className="inline-flex items-center gap-1 text-emerald-600 dark:text-emerald-400 font-semibold">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       เชื่อมต่อแล้ว
                     </span>
                   ) : (
                     <span className="inline-flex items-center gap-1 text-amber-600 dark:text-amber-400 font-medium">
-                      <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
                       ตั้งค่า URL
                     </span>
                   )}
                 </div>
-                <div className="font-mono text-2xs font-semibold text-slate-800 dark:text-slate-200 truncate bg-slate-50 dark:bg-slate-900/60 px-1.5 py-0.5 rounded border border-slate-100 dark:border-slate-700">
+                <div className="font-mono text-2xs font-semibold text-slate-700 dark:text-slate-300 truncate bg-slate-50 dark:bg-slate-900/60 px-1.5 py-0.5 rounded border border-slate-100 dark:border-slate-700">
                   {appsScriptConfig?.sheetName || 'ชีต: ทะเบียนคุมเงินยืม'}
                 </div>
               </div>
@@ -353,7 +343,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <span>ธีม: {currentTheme.name.split(' ')[0]}</span>
                 <button
                   onClick={() => setIsCollapsed(true)}
-                  className="hidden md:flex items-center gap-1 text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 transition-colors cursor-pointer"
+                  className="hidden md:flex items-center gap-1 text-slate-400 dark:text-slate-500 hover:text-slate-600 dark:hover:text-slate-300 transition-colors cursor-pointer"
                   title="ย่อสไลด์บาร์"
                 >
                   <ChevronLeft className="w-3.5 h-3.5" />

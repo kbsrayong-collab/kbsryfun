@@ -88,8 +88,8 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                 onClick={() => onUpdateSettings({ colorTheme: theme.id })}
                 className={`relative flex flex-col p-4 rounded-xl border text-left transition-all cursor-pointer group ${
                   isSelected
-                    ? 'border-slate-900 dark:border-white shadow-md ring-2 ring-slate-900 dark:ring-white bg-slate-50/70 dark:bg-slate-700/50'
-                    : 'border-slate-200 dark:border-slate-700 hover:border-slate-300 dark:hover:border-slate-600 hover:bg-slate-50/50 dark:hover:bg-slate-700/30'
+                    ? 'border-indigo-600 dark:border-indigo-400 shadow-md ring-2 ring-indigo-500/50 bg-[var(--surface-2)]'
+                    : 'border-[var(--line)] hover:border-[var(--line-2)] hover:bg-[var(--surface-2)]'
                 }`}
               >
                 {/* Header with color dot and active badge */}
@@ -97,38 +97,41 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
                   <div className="flex items-center gap-2.5">
                     <span
                       className="w-5 h-5 rounded-full shadow-xs border border-white/50 shrink-0"
-                      style={{ backgroundColor: theme.accentHex }}
+                      style={{ background: theme.gradient || theme.accentHex }}
                     />
-                    <span className="text-xs font-bold text-slate-900 dark:text-white truncate">
+                    <span className="text-xs font-bold text-[var(--ink)] truncate">
                       {theme.name}
                     </span>
                   </div>
                   {isSelected && (
-                    <span className="w-5 h-5 rounded-full bg-slate-900 dark:bg-white text-white dark:text-slate-900 flex items-center justify-center text-xs shrink-0">
+                    <span 
+                      className="w-5 h-5 rounded-full text-white flex items-center justify-center text-xs shrink-0 shadow-xs"
+                      style={{ background: theme.gradient || theme.accentHex }}
+                    >
                       <Check className="w-3.5 h-3.5 stroke-[3]" />
                     </span>
                   )}
                 </div>
 
-                <p className="text-2xs text-slate-500 dark:text-slate-400 mb-3 flex-1 line-clamp-2">
+                <p className="text-2xs text-[var(--muted)] mb-3 flex-1 line-clamp-2">
                   {theme.subname}
                 </p>
 
                 {/* Color Palette Preview Swatches */}
-                <div className="flex items-center gap-1.5 pt-2 border-t border-slate-100 dark:border-slate-700/60">
+                <div className="flex items-center gap-1.5 pt-2 border-t border-[var(--line)]">
                   <div 
                     className="h-3.5 flex-1 rounded-sm shadow-2xs" 
+                    style={{ background: theme.gradient || theme.accentHex }} 
+                    title="เกรเดียนต์หลัก (Theme Gradient)"
+                  />
+                  <div 
+                    className="h-3.5 flex-1 rounded-sm opacity-90" 
                     style={{ backgroundColor: theme.accentHex }} 
                     title="สีหลัก (Primary)"
                   />
                   <div 
-                    className="h-3.5 flex-1 rounded-sm opacity-80" 
-                    style={{ backgroundColor: theme.accentHex, filter: 'brightness(1.2)' }} 
-                    title="สีรอง (Secondary)"
-                  />
-                  <div 
                     className="h-3.5 flex-1 rounded-sm opacity-40" 
-                    style={{ backgroundColor: theme.accentHex, filter: 'brightness(1.4)' }} 
+                    style={{ backgroundColor: theme.accentHex, filter: 'brightness(1.3)' }} 
                     title="สีพื้นหลังอ่อน (Light Accent)"
                   />
                 </div>

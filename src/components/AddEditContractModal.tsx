@@ -24,7 +24,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
   const currentTheme = COLOR_THEMES.find(t => t.id === settings?.colorTheme) || COLOR_THEMES[0];
   const isDarkMode = settings?.themeMode === 'dark';
 
-  const [contractNo, setContractNo] = useState('01/2570');
+  const [contractNo, setContractNo] = useState('1/2570');
   const [contractDate, setContractDate] = useState('');
   const [borrowerName, setBorrowerName] = useState('');
   const [position, setPosition] = useState('');

@@ -57,12 +57,12 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
     } else {
       // Default new contract
       const today = new Date().toISOString().split('T')[0];
-      const nextNo = `ย.${String(existingContractsCount + 1).padStart(2, '0')}/${getFiscalYear()}`;
+      const nextNo = `{String(existingContractsCount + 1).padStart(2, '0')}/${getFiscalYear()}`;
       setContractNo(nextNo);
       setContractDate(today);
       setBorrowerName('');
       setPosition('');
-      setDepartment('กลุ่มงานบริหารทั่วไป');
+      setDepartment('กบส.');
       setFiscalYear(getFiscalYear());
       setPurpose('');
       setLoanType('travel');
@@ -170,7 +170,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 required
                 value={contractNo}
                 onChange={(e) => setContractNo(e.target.value)}
-                placeholder="เช่น ย.01/2569"
+                placeholder="เช่น 01/2569"
                 className={monoInputClass}
                 style={inputStyle}
               />
@@ -216,7 +216,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 required
                 value={borrowerName}
                 onChange={(e) => setBorrowerName(e.target.value)}
-                placeholder="เช่น นายสมเกียรติ มั่นคง"
+                placeholder="เช่น นายก ระยอง"
                 className={standardInputClass}
                 style={inputStyle}
               />

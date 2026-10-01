@@ -24,7 +24,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
   const currentTheme = COLOR_THEMES.find(t => t.id === settings?.colorTheme) || COLOR_THEMES[0];
   const isDarkMode = settings?.themeMode === 'dark';
 
-  const [contractNo, setContractNo] = useState('1/2570');
+  const [contractNo, setContractNo] = useState('001/2570');
   const [contractDate, setContractDate] = useState('');
   const [borrowerName, setBorrowerName] = useState('');
   const [position, setPosition] = useState('');
@@ -57,7 +57,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
     } else {
       // Default new contract
       const today = new Date().toISOString().split('T')[0];
-      const nextNo = `${String(existingContractsCount + 1).padStart(2, '0')}/2570`;
+      const nextNo = `${String(existingContractsCount + 1).padStart(3, '0')}/2570`;
       setContractNo(nextNo);
       setContractDate(today);
       setBorrowerName('');
@@ -170,7 +170,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 required
                 value={contractNo}
                 onChange={(e) => setContractNo(e.target.value)}
-                placeholder="เช่น 01/2570"
+                placeholder="เช่น 001/2570"
                 className={monoInputClass}
                 style={inputStyle}
               />

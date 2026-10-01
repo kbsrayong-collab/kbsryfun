@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { BudgetType, LoanContract, LoanType } from '../types/loan';
 import { calculateDefaultDueDate, getFiscalYear } from '../utils/loanCalculations';
-import { X, Calendar, DollarSign, User, Building, FileText, Check } from 'lucide-react';
+import { AppSettings, COLOR_THEMES } from '../types/settings';
+import { X, Check } from 'lucide-react';
 
 interface AddEditContractModalProps {
   isOpen: boolean;
@@ -9,6 +10,7 @@ interface AddEditContractModalProps {
   onSave: (contractData: any) => void;
   contractToEdit: LoanContract | null;
   existingContractsCount: number;
+  settings?: AppSettings;
 }
 
 export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
@@ -17,7 +19,11 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
   onSave,
   contractToEdit,
   existingContractsCount,
+  settings,
 }) => {
+  const currentTheme = COLOR_THEMES.find(t => t.id === settings?.colorTheme) || COLOR_THEMES[0];
+  const isDarkMode = settings?.themeMode === 'dark';
+
   const [contractNo, setContractNo] = useState('');
   const [contractDate, setContractDate] = useState('');
   const [borrowerName, setBorrowerName] = useState('');
@@ -114,39 +120,50 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
 
   if (!isOpen) return null;
 
+  // Consistent reusable high-contrast input classes
+  const inputStyle = { '--tw-ring-color': currentTheme.accentHex } as React.CSSProperties;
+  const standardInputClass = "w-full px-3 py-2 text-sm text-slate-900 dark:text-slate-100 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-600 rounded-lg placeholder:text-slate-400 dark:placeholder:text-slate-500 focus:outline-none focus:ring-2 transition-colors";
+  const monoInputClass = `${standardInputClass} font-mono`;
+  const labelClass = "block text-xs font-semibold text-slate-800 dark:text-slate-200 mb-1";
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
-      <div className="bg-white rounded-2xl border border-slate-200 shadow-2xl max-w-2xl w-full overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-150">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-full overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 bg-slate-50 flex items-center justify-between">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-700 text-white flex items-center justify-center font-bold text-xs">
+        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div 
+              className="w-9 h-9 rounded-xl text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-white/20 shrink-0"
+              style={{ backgroundColor: currentTheme.accentHex }}
+            >
               {contractToEdit ? 'แก้ไข' : 'ใหม่'}
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900">
+              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
                 {contractToEdit ? 'แก้ไขข้อมูลสัญญายืมเงิน' : 'บันทึกสัญญายืมเงินราชการ (แบบ 8500)'}
               </h2>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-600 dark:text-slate-300 font-normal">
                 กรอกรายละเอียดสัญญาเงินยืมตามระเบียบกระทรวงการคลัง
               </p>
             </div>
           </div>
           <button
+            type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200/60 transition-colors"
+            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+            title="ปิดหน้าต่าง"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto text-xs">
+        <form onSubmit={handleSubmit} className="p-6 space-y-4 max-h-[75vh] overflow-y-auto">
           {/* Row 1: Contract No & Date & Fiscal Year */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
-                เลขที่สัญญา / สัญญายืมเงิน <span className="text-rose-500">*</span>
+              <label className={labelClass}>
+                เลขที่สัญญา / สัญญายืมเงิน <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 type="text"
@@ -154,33 +171,36 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 value={contractNo}
                 onChange={(e) => setContractNo(e.target.value)}
                 placeholder="เช่น ย.01/2569"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={monoInputClass}
+                style={inputStyle}
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
-                วันที่ทำสัญญา <span className="text-rose-500">*</span>
+              <label className={labelClass}>
+                วันที่ทำสัญญา <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={contractDate}
                 onChange={(e) => setContractDate(e.target.value)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
-                ปีงบประมาณ (พ.ศ.) <span className="text-rose-500">*</span>
+              <label className={labelClass}>
+                ปีงบประมาณ (พ.ศ.) <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 type="number"
                 required
                 value={fiscalYear}
                 onChange={(e) => setFiscalYear(Number(e.target.value))}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg font-mono focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={monoInputClass}
+                style={inputStyle}
               />
             </div>
           </div>
@@ -188,8 +208,8 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
           {/* Row 2: Borrower Name, Position, Department */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
-                ชื่อ-สกุล ผู้ยืมเงิน <span className="text-rose-500">*</span>
+              <label className={labelClass}>
+                ชื่อ-สกุล ผู้ยืมเงิน <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 type="text"
@@ -197,12 +217,13 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 value={borrowerName}
                 onChange={(e) => setBorrowerName(e.target.value)}
                 placeholder="เช่น นายสมเกียรติ มั่นคง"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
+              <label className={labelClass}>
                 ตำแหน่ง
               </label>
               <input
@@ -210,12 +231,13 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
                 placeholder="เช่น นักวิชาการเงินฯ ชำนาญการ"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               />
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
+              <label className={labelClass}>
                 กลุ่มงาน / ฝ่าย / สังกัด
               </label>
               <input
@@ -223,7 +245,8 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
                 placeholder="เช่น กลุ่มงานบริหารทั่วไป"
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               />
             </div>
           </div>
@@ -231,13 +254,14 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
           {/* Row 3: Loan Type & Budget Type */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
+              <label className={labelClass}>
                 ประเภทการยืมเงิน (กำหนดระยะเวลาส่งใช้)
               </label>
               <select
                 value={loanType}
                 onChange={(e) => handleLoanTypeChange(e.target.value as LoanType)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               >
                 <option value="travel">เดินทางไปราชการ (ส่งใช้ภายใน 15 วัน)</option>
                 <option value="general">ปฏิบัติราชการอื่น / จัดโครงการ / อบรม (ส่งใช้ภายใน 30 วัน)</option>
@@ -247,13 +271,14 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
             </div>
 
             <div>
-              <label className="block font-semibold text-slate-700 mb-1">
+              <label className={labelClass}>
                 แหล่งเงินงบประมาณ
               </label>
               <select
                 value={budgetType}
                 onChange={(e) => setBudgetType(e.target.value as BudgetType)}
-                className="w-full px-3 py-2 border border-slate-300 rounded-lg bg-white focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className={standardInputClass}
+                style={inputStyle}
               >
                 <option value="เงินงบประมาณ (เงินรายจ่ายประจำปี)">เงินงบประมาณ (เงินรายจ่ายประจำปี)</option>
                 <option value="เงินนอกงบประมาณ">เงินนอกงบประมาณ</option>
@@ -266,8 +291,8 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
 
           {/* Row 4: Purpose */}
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">
-              วัตถุประสงค์การยืมเงิน / รายละเอียดโครงการ <span className="text-rose-500">*</span>
+            <label className={labelClass}>
+              วัตถุประสงค์การยืมเงิน / รายละเอียดโครงการ <span className="text-rose-500 dark:text-rose-400">*</span>
             </label>
             <textarea
               required
@@ -275,18 +300,25 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
               placeholder="ระบุวัตถุประสงค์ เช่น ค่าใช้จ่ายในการเดินทางไปปฏิบัติราชการร่วมประชุม... หรือ จัดอบรม..."
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none leading-relaxed"
+              className={`${standardInputClass} leading-relaxed`}
+              style={inputStyle}
             />
           </div>
 
-          {/* Row 5: Loan Amount & Disbursement & Due Date */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-emerald-50/50 p-3.5 rounded-xl border border-emerald-100">
+          {/* Row 5: Loan Amount & Disbursement & Due Date (Theme Accent Highlight Box) */}
+          <div 
+            className="grid grid-cols-1 sm:grid-cols-3 gap-3.5 p-4 rounded-xl border transition-colors shadow-xs"
+            style={{
+              backgroundColor: isDarkMode ? '#1e293b' : `${currentTheme.accentHex}0d`,
+              borderColor: isDarkMode ? '#334155' : `${currentTheme.accentHex}30`
+            }}
+          >
             <div>
-              <label className="block font-semibold text-emerald-950 mb-1">
-                วงเงินยืม (บาท) <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
+                วงเงินยืม (บาท) <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <div className="relative">
-                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">฿</span>
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500 dark:text-slate-400 font-bold text-sm">฿</span>
                 <input
                   type="number"
                   step="0.01"
@@ -295,43 +327,49 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                   value={loanAmount}
                   onChange={(e) => setLoanAmount(e.target.value)}
                   placeholder="0.00"
-                  className="w-full pl-8 pr-3 py-2 bg-white border border-slate-300 rounded-lg font-mono font-semibold text-slate-900 focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                  className="w-full pl-8 pr-3 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg font-mono font-bold text-slate-900 dark:text-white placeholder:text-slate-400 focus:outline-none focus:ring-2"
+                  style={inputStyle}
                 />
               </div>
             </div>
 
             <div>
-              <label className="block font-semibold text-emerald-950 mb-1">
+              <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
                 วันที่จ่ายเงินยืมให้ผู้ยืม
               </label>
               <input
                 type="date"
                 value={disbursementDate}
                 onChange={(e) => handleDisbursementChange(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2"
+                style={inputStyle}
               />
-              <span className="text-2xs text-emerald-700 mt-1 block">
+              <span 
+                className="text-2xs font-medium mt-1.5 block"
+                style={{ color: isDarkMode ? '#94a3b8' : currentTheme.accentHex }}
+              >
                 คำนวณวันส่งใช้ 15/30 วันอัตโนมัติ
               </span>
             </div>
 
             <div>
-              <label className="block font-semibold text-emerald-950 mb-1">
-                กำหนดวันส่งใช้คืน (Due Date) <span className="text-rose-500">*</span>
+              <label className="block text-xs font-bold text-slate-900 dark:text-slate-100 mb-1">
+                กำหนดวันส่งใช้คืน (Due Date) <span className="text-rose-500 dark:text-rose-400">*</span>
               </label>
               <input
                 type="date"
                 required
                 value={dueDate}
                 onChange={(e) => setDueDate(e.target.value)}
-                className="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+                className="w-full px-3 py-2 text-sm bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-600 rounded-lg font-medium text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2"
+                style={inputStyle}
               />
             </div>
           </div>
 
           {/* Row 6: Remarks */}
           <div>
-            <label className="block font-semibold text-slate-700 mb-1">
+            <label className={labelClass}>
               หมายเหตุเพิ่มเติม
             </label>
             <input
@@ -339,22 +377,24 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
               value={remarks}
               onChange={(e) => setRemarks(e.target.value)}
               placeholder="เช่น เลขที่ฎีกาเบิกจ่าย หรือบันทึกข้อความอนุมัติ"
-              className="w-full px-3 py-2 border border-slate-300 rounded-lg focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className={standardInputClass}
+              style={inputStyle}
             />
           </div>
 
           {/* Actions */}
-          <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-2">
+          <div className="pt-4 border-t border-slate-200 dark:border-slate-800 flex items-center justify-end gap-2.5">
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-slate-600 bg-white border border-slate-300 rounded-lg hover:bg-slate-50 transition-colors"
+              className="px-4 py-2 text-xs font-medium text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
             >
               ยกเลิก
             </button>
             <button
               type="submit"
-              className="px-5 py-2 text-white bg-emerald-700 hover:bg-emerald-800 font-semibold rounded-lg transition-colors flex items-center gap-1.5 shadow-xs"
+              className="px-5 py-2 text-xs text-white font-semibold rounded-lg transition-all duration-150 flex items-center gap-1.5 shadow-sm hover:brightness-110 active:brightness-95"
+              style={{ backgroundColor: currentTheme.accentHex }}
             >
               <Check className="w-4 h-4" />
               <span>{contractToEdit ? 'บันทึกการแก้ไข' : 'บันทึกสัญญาเงินยืม'}</span>

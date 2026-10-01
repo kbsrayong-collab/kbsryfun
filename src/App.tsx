@@ -565,6 +565,7 @@ export default function App() {
           onPrintForm8500={handleOpenForm8500}
           onVerifyRepayment={handleVerifyRepayment}
           onDeleteRepayment={handleDeleteRepayment}
+          settings={settings}
         />
       )}
 
@@ -579,6 +580,7 @@ export default function App() {
           onSave={handleSaveContract}
           contractToEdit={contractToEdit}
           existingContractsCount={contracts.length}
+          settings={settings}
         />
       )}
 
@@ -591,6 +593,7 @@ export default function App() {
             setIsRepaymentModalOpen(false);
           }}
           onSaveRepayment={handleSaveRepayment}
+          settings={settings}
         />
       )}
 

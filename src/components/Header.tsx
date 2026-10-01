@@ -48,7 +48,7 @@ export const Header: React.FC<HeaderProps> = ({
       case 'overview':
         return 'ภาพรวมทะเบียนสัญญายืมเงิน';
       case 'contracts':
-        return 'ทะเบียนคุมสัญญาเงินยืมทั้งหมด (แบบ 8500)';
+        return 'ทะเบียนคุมสัญญาเงิน (เงินนอกงบประมาณ)';
       case 'overdue':
         return 'ทะเบียนติดตามหนี้เงินยืมเกินกำหนดส่งใช้';
       case 'demand-letters':

@@ -13,13 +13,11 @@ import { Sidebar, NavTab } from './components/Sidebar';
 import { DashboardStats } from './components/DashboardStats';
 import { LoanTable } from './components/LoanTable';
 import { OverdueView } from './components/OverdueView';
-import { DemandLetterHub } from './components/DemandLetterHub';
 import { SettingsView } from './components/SettingsView';
 import { AppsScriptView } from './components/AppsScriptView';
 import { ContractDetailModal } from './components/ContractDetailModal';
 import { AddEditContractModal } from './components/AddEditContractModal';
 import { AddRepaymentModal } from './components/AddRepaymentModal';
-import { OfficialDemandLetterModal } from './components/OfficialDemandLetterModal';
 import { Form8500PrintView } from './components/Form8500PrintView';
 import { AppSheetSyncModal } from './components/AppSheetSyncModal';
 import { AppsScriptSyncModal } from './components/AppsScriptSyncModal';
@@ -142,7 +140,6 @@ export default function App() {
   const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
   const [contractToEdit, setContractToEdit] = useState<LoanContract | null>(null);
   const [isRepaymentModalOpen, setIsRepaymentModalOpen] = useState(false);
-  const [isDemandLetterModalOpen, setIsDemandLetterModalOpen] = useState(false);
   const [isForm8500ModalOpen, setIsForm8500ModalOpen] = useState(false);
   const [isAppSheetModalOpen, setIsAppSheetModalOpen] = useState(false);
   const [isAppsScriptModalOpen, setIsAppsScriptModalOpen] = useState(false);
@@ -310,12 +307,7 @@ export default function App() {
     }
   };
 
-  // Handlers for Demand Letters & Form 8500
-  const handleOpenDemandLetter = (contract: LoanContract) => {
-    setSelectedContract(contract);
-    setIsDemandLetterModalOpen(true);
-  };
-
+  // Handlers for Form 8500
   const handleOpenForm8500 = (contract: LoanContract) => {
     setSelectedContract(contract);
     setIsForm8500ModalOpen(true);
@@ -413,7 +405,6 @@ export default function App() {
                   setStatusFilter(status);
                   setActiveTab('contracts');
                 }}
-                onOpenDemandLetterTab={() => setActiveTab('demand-letters')}
               />
 
               {/* Registry Table */}
@@ -433,7 +424,6 @@ export default function App() {
                   onEditContract={handleOpenEditModal}
                   onDeleteContract={handleDeleteContract}
                   onAddRepayment={handleOpenRepaymentModal}
-                  onGenerateDemandLetter={handleOpenDemandLetter}
                   searchTerm={searchTerm}
                   setSearchTerm={setSearchTerm}
                   statusFilter={statusFilter}
@@ -476,7 +466,6 @@ export default function App() {
                 onEditContract={handleOpenEditModal}
                 onDeleteContract={handleDeleteContract}
                 onAddRepayment={handleOpenRepaymentModal}
-                onGenerateDemandLetter={handleOpenDemandLetter}
                 searchTerm={searchTerm}
                 setSearchTerm={setSearchTerm}
                 statusFilter={statusFilter}
@@ -495,17 +484,8 @@ export default function App() {
           {activeTab === 'overdue' && (
             <OverdueView
               contracts={contracts}
-              onGenerateDemandLetter={handleOpenDemandLetter}
               onViewContract={handleViewContract}
               onAddRepayment={handleOpenRepaymentModal}
-            />
-          )}
-
-          {/* Tab 4: Demand Letter Hub */}
-          {activeTab === 'demand-letters' && (
-            <DemandLetterHub
-              contracts={contracts}
-              onOpenDemandLetterModal={handleOpenDemandLetter}
             />
           )}
 
@@ -561,7 +541,6 @@ export default function App() {
             setSelectedContract(null);
           }}
           onAddRepayment={handleOpenRepaymentModal}
-          onGenerateDemandLetter={handleOpenDemandLetter}
           onPrintForm8500={handleOpenForm8500}
           onVerifyRepayment={handleVerifyRepayment}
           onDeleteRepayment={handleDeleteRepayment}
@@ -594,17 +573,6 @@ export default function App() {
           }}
           onSaveRepayment={handleSaveRepayment}
           settings={settings}
-        />
-      )}
-
-      {/* 4. Official Demand Letter (บันทึกข้อความ ตราครุฑ) */}
-      {isDemandLetterModalOpen && (
-        <OfficialDemandLetterModal
-          contract={selectedContract}
-          isOpen={isDemandLetterModalOpen}
-          onClose={() => {
-            setIsDemandLetterModalOpen(false);
-          }}
         />
       )}
 

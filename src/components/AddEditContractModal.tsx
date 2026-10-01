@@ -281,7 +281,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 style={inputStyle}
               >
                 <option value="เงินกองทุนพัฒนาสหกรณ์">เงินกองทุนพัฒนาสหกรณ์</option>
-                <option value="เงินกองทุนสงเคราะห์เกษตร">เงินกองทุนสงเคราะห์เกษตร</option>
+                <option value="เงินกองทุนสงเคราะห์เกษตร">เงินกองทุนสงเคราะห์เกษตรกร</option>
                 <option value="เงินรายได้นิคมสหกรณ์">เงินรายได้นิคมสหกรณ์</option>
               </select>
             </div>

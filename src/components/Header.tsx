@@ -51,8 +51,6 @@ export const Header: React.FC<HeaderProps> = ({
         return 'ทะเบียนคุมสัญญาเงิน (เงินนอกงบประมาณ)';
       case 'overdue':
         return 'ทะเบียนติดตามหนี้เงินยืมเกินกำหนดส่งใช้';
-      case 'demand-letters':
-        return 'ศูนย์ออกหนังสือทวงถามหนี้ (บันทึกข้อความตราครุฑ)';
       case 'appscript':
         return 'การเชื่อมต่อ Google Apps Script (Google Sheets)';
       case 'appsheet':

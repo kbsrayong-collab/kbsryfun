@@ -2,13 +2,12 @@ import React from 'react';
 import { LoanContract } from '../types/loan';
 import { calculateLoanSummary, convertNumberToThaiBahtText, formatCurrency, formatThaiDate, getStatusBadgeStyle } from '../utils/loanCalculations';
 import { AppSettings, COLOR_THEMES } from '../types/settings';
-import { X, CheckCircle, Clock, AlertTriangle, Plus, FileText, Printer, ShieldCheck, Trash2 } from 'lucide-react';
+import { X, CheckCircle, Clock, AlertTriangle, Plus, Printer, ShieldCheck, Trash2 } from 'lucide-react';
 
 interface ContractDetailModalProps {
   contract: LoanContract | null;
   onClose: () => void;
   onAddRepayment: (contract: LoanContract) => void;
-  onGenerateDemandLetter: (contract: LoanContract) => void;
   onPrintForm8500: (contract: LoanContract) => void;
   onVerifyRepayment: (contractId: string, repaymentId: string, verifierName: string) => void;
   onDeleteRepayment: (contractId: string, repaymentId: string) => void;
@@ -19,7 +18,6 @@ export const ContractDetailModal: React.FC<ContractDetailModalProps> = ({
   contract,
   onClose,
   onAddRepayment,
-  onGenerateDemandLetter,
   onPrintForm8500,
   onVerifyRepayment,
   onDeleteRepayment,
@@ -310,17 +308,6 @@ export const ContractDetailModal: React.FC<ContractDetailModalProps> = ({
               <Printer className="w-4 h-4 text-slate-600 dark:text-slate-400" />
               <span>พิมพ์ทะเบียนคุม (แบบ 8500)</span>
             </button>
-
-            {summary.isOverdue && summary.remainingDebt > 0 && (
-              <button
-                type="button"
-                onClick={() => onGenerateDemandLetter(contract)}
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-rose-700 dark:text-rose-300 bg-rose-50 dark:bg-rose-950/40 border border-rose-200 dark:border-rose-800 rounded-lg hover:bg-rose-100 dark:hover:bg-rose-900/60 transition-colors"
-              >
-                <FileText className="w-4 h-4" />
-                <span>ออกหนังสือทวงถามหนี้</span>
-              </button>
-            )}
           </div>
 
           <button

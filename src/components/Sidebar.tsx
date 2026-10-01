@@ -15,7 +15,7 @@ import {
 import { AppSheetConfig, AppsScriptConfig } from '../types/loan';
 import { AppSettings, COLOR_THEMES } from '../types/settings';
 
-export type NavTab = 'overview' | 'contracts' | 'overdue' | 'demand-letters' | 'appscript' | 'appsheet' | 'settings';
+export type NavTab = 'overview' | 'contracts' | 'overdue' | 'appscript' | 'appsheet' | 'settings';
 
 interface SidebarProps {
   activeTab: NavTab;
@@ -78,14 +78,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
       description: 'สัญญาที่พ้นกำหนดส่งใช้คืน',
       badge: overdueCount > 0 ? `${overdueCount}` : null,
       badgeColor: 'bg-rose-600 text-white animate-pulse',
-    },
-    {
-      id: 'demand-letters' as NavTab,
-      label: 'หนังสือทวงถามหนี้',
-      shortLabel: 'ทวงถาม',
-      icon: FileText,
-      description: 'บันทึกข้อความตราครุฑ',
-      badge: null,
     },
     {
       id: 'appscript' as NavTab,

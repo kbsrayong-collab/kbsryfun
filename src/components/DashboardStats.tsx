@@ -1,18 +1,16 @@
 import React from 'react';
 import { LoanContract } from '../types/loan';
 import { calculateLoanSummary, formatCurrency } from '../utils/loanCalculations';
-import { AlertTriangle, Clock, CheckCircle2, DollarSign, ArrowRight } from 'lucide-react';
+import { AlertTriangle, Clock, CheckCircle2, DollarSign } from 'lucide-react';
 
 interface DashboardStatsProps {
   contracts: LoanContract[];
   onSelectStatusFilter: (status: any) => void;
-  onOpenDemandLetterTab: () => void;
 }
 
 export const DashboardStats: React.FC<DashboardStatsProps> = ({
   contracts,
   onSelectStatusFilter,
-  onOpenDemandLetterTab,
 }) => {
   // Aggregate calculations
   let totalLoanAmount = 0;
@@ -55,23 +53,16 @@ export const DashboardStats: React.FC<DashboardStatsProps> = ({
                 ตรวจพบสัญญายืมเงินเกินกำหนดส่งใช้ {overdueCount} รายการ (ยอดหนี้ค้างชำระ ฿{formatCurrency(overdueDebt)})
               </p>
               <p className="text-xs text-rose-800 dark:text-rose-300/80 mt-0.5">
-                ตามระเบียบเงินยืมราชการ ต้องส่งใช้ภายใน 15-30 วัน กรุณาตรวจสอบหรือออกบันทึกข้อความทวงถามหนี้
+                ตามระเบียบเงินยืมราชการ ต้องส่งใช้ภายใน 15-30 วัน กรุณาตรวจสอบและติดตามการส่งใช้เงินยืม
               </p>
             </div>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => onSelectStatusFilter('overdue')}
-              className="px-3 py-1.5 text-xs font-medium text-rose-900 dark:text-rose-200 bg-rose-100 dark:bg-rose-900/60 hover:bg-rose-200 dark:hover:bg-rose-800 rounded-md transition-colors whitespace-nowrap cursor-pointer"
+              className="px-3.5 py-1.5 text-xs font-semibold text-rose-900 dark:text-rose-200 bg-rose-100 dark:bg-rose-900/60 hover:bg-rose-200 dark:hover:bg-rose-800 rounded-lg transition-colors whitespace-nowrap cursor-pointer border border-rose-200 dark:border-rose-800"
             >
               ดูรายการเกินกำหนด
-            </button>
-            <button
-              onClick={onOpenDemandLetterTab}
-              className="px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-700 hover:bg-rose-800 rounded-md transition-colors whitespace-nowrap flex items-center gap-1 shadow-xs cursor-pointer"
-            >
-              <span>ออกหนังสือทวงถาม</span>
-              <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
         </div>

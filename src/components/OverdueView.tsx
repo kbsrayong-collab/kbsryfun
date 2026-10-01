@@ -1,18 +1,16 @@
 import React, { useState } from 'react';
 import { LoanContract } from '../types/loan';
 import { calculateLoanSummary, convertNumberToThaiBahtText, formatCurrency, formatThaiDate } from '../utils/loanCalculations';
-import { AlertTriangle, FileText, DollarSign, Calendar, Eye, Clock } from 'lucide-react';
+import { AlertTriangle, DollarSign, Calendar, Eye, Clock } from 'lucide-react';
 
 interface OverdueViewProps {
   contracts: LoanContract[];
-  onGenerateDemandLetter: (contract: LoanContract) => void;
   onViewContract: (contract: LoanContract) => void;
   onAddRepayment: (contract: LoanContract) => void;
 }
 
 export const OverdueView: React.FC<OverdueViewProps> = ({
   contracts,
-  onGenerateDemandLetter,
   onViewContract,
   onAddRepayment,
 }) => {
@@ -47,7 +45,7 @@ export const OverdueView: React.FC<OverdueViewProps> = ({
               ทะเบียนติดตามหนี้เงินยืมราชการเกินกำหนดส่งใช้
             </h2>
             <p className="text-xs text-rose-200 max-w-2xl">
-              สัญญาการยืมเงินต้องส่งใช้ภายในกำหนดเวลา เมื่อพ้นกำหนดให้กลุ่มงานการเงินออกหนังสือติดตามทวงถามส่งใช้เงินยืมทันที
+              สัญญาการยืมเงินต้องส่งใช้ภายในกำหนดเวลา เมื่อพ้นกำหนดให้กลุ่มงานการเงินติดตามส่งใช้เงินยืมทันที
             </p>
           </div>
 
@@ -180,14 +178,6 @@ export const OverdueView: React.FC<OverdueViewProps> = ({
                   >
                     <DollarSign className="w-3.5 h-3.5" />
                     <span>บันทึกชำระคืน</span>
-                  </button>
-
-                  <button
-                    onClick={() => onGenerateDemandLetter(contract)}
-                    className="px-3.5 py-1.5 text-xs font-semibold text-white bg-rose-700 hover:bg-rose-800 rounded-lg transition-colors flex items-center gap-1 shadow-xs cursor-pointer"
-                  >
-                    <FileText className="w-3.5 h-3.5" />
-                    <span>ออกหนังสือทวงถามหนี้</span>
                   </button>
                 </div>
               </div>

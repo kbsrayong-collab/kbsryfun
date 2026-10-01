@@ -6,7 +6,6 @@ import {
   Filter, 
   Eye, 
   DollarSign, 
-  FileText, 
   Edit2, 
   Trash2, 
   ChevronLeft, 
@@ -24,7 +23,6 @@ interface LoanTableProps {
   onEditContract: (contract: LoanContract) => void;
   onDeleteContract: (contractId: string) => void;
   onAddRepayment: (contract: LoanContract) => void;
-  onGenerateDemandLetter: (contract: LoanContract) => void;
   searchTerm: string;
   setSearchTerm: (term: string) => void;
   statusFilter: 'all' | LoanStatus;
@@ -43,7 +41,6 @@ export const LoanTable: React.FC<LoanTableProps> = ({
   onEditContract,
   onDeleteContract,
   onAddRepayment,
-  onGenerateDemandLetter,
   searchTerm,
   setSearchTerm,
   statusFilter,
@@ -403,7 +400,7 @@ export const LoanTable: React.FC<LoanTableProps> = ({
             <option value="all">สถานะทั้งหมด</option>
             <option value="normal">ปกติ (ยังไม่ครบกำหนด)</option>
             <option value="due_soon">ใกล้ครบกำหนด (ภายใน 7 วัน)</option>
-            <option value="overdue">เกินกำหนดชำระ (ต้องทวงถาม)</option>
+            <option value="overdue">เกินกำหนดชำระ</option>
             <option value="partial">ส่งใช้แล้วบางส่วน</option>
             <option value="closed">ปิดสัญญาแล้ว (ครบถ้วน)</option>
           </select>
@@ -578,17 +575,6 @@ export const LoanTable: React.FC<LoanTableProps> = ({
                             className="p-1.5 text-emerald-700 dark:text-emerald-400 hover:text-emerald-800 dark:hover:text-emerald-300 hover:bg-emerald-50 dark:hover:bg-emerald-950/50 rounded-md transition-colors cursor-pointer"
                           >
                             <DollarSign className="w-4 h-4" />
-                          </button>
-                        )}
-
-                        {/* Demand Letter Generator */}
-                        {summary.isOverdue && summary.remainingDebt > 0 && (
-                          <button
-                            onClick={() => onGenerateDemandLetter(contract)}
-                            title="ออกหนังสือทวงถามหนี้เงินยืมราชการ (บันทึกข้อความ)"
-                            className="p-1.5 text-rose-700 dark:text-rose-400 hover:text-rose-800 dark:hover:text-rose-300 hover:bg-rose-50 dark:hover:bg-rose-950/50 rounded-md transition-colors cursor-pointer"
-                          >
-                            <FileText className="w-4 h-4" />
                           </button>
                         )}
 

@@ -145,9 +145,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 <h1 className="text-sm font-bold text-slate-900 dark:text-white tracking-tight leading-tight truncate">
                   ทะเบียนคุมเงินยืม
                 </h1>
-                <p className="text-2xs text-slate-500 dark:text-slate-400 font-medium truncate">
-                  ราชการ (แบบ 8500)
-                </p>
               </div>
             )}
           </div>

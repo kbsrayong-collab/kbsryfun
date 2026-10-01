@@ -1,0 +1,56 @@
+{
+  "entities": {
+    "LoanContract": {
+      "title": "LoanContract",
+      "description": "Government loan contract register (แบบ 8500)",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "maxLength": 128 },
+        "contractNo": { "type": "string", "maxLength": 100 },
+        "contractDate": { "type": "string", "maxLength": 50 },
+        "borrowerName": { "type": "string", "maxLength": 200 },
+        "position": { "type": "string", "maxLength": 200 },
+        "department": { "type": "string", "maxLength": 200 },
+        "fiscalYear": { "type": "number" },
+        "purpose": { "type": "string", "maxLength": 1000 },
+        "loanType": { "type": "string", "maxLength": 50 },
+        "budgetType": { "type": "string", "maxLength": 100 },
+        "loanAmount": { "type": "number" },
+        "disbursementDate": { "type": "string", "maxLength": 50 },
+        "dueDate": { "type": "string", "maxLength": 50 },
+        "remarks": { "type": "string", "maxLength": 1000 },
+        "repayments": { "type": "array" },
+        "createdBy": { "type": "string", "maxLength": 128 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["id", "contractNo", "contractDate", "borrowerName", "fiscalYear", "purpose", "loanAmount", "dueDate"]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile for authenticated government officer",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "maxLength": 128 },
+        "email": { "type": "string", "maxLength": 255 },
+        "displayName": { "type": "string", "maxLength": 200 },
+        "photoURL": { "type": "string", "maxLength": 1000 },
+        "role": { "type": "string", "maxLength": 50 },
+        "department": { "type": "string", "maxLength": 200 },
+        "createdAt": { "type": "string", "maxLength": 100 },
+        "updatedAt": { "type": "string", "maxLength": 100 }
+      },
+      "required": ["uid", "email"]
+    }
+  },
+  "firestore": {
+    "/contracts/{contractId}": {
+      "schema": "LoanContract",
+      "description": "Collection storing all government loan contracts and repayment records"
+    },
+    "/users/{userId}": {
+      "schema": "UserProfile",
+      "description": "User profile documents indexed by user UID"
+    }
+  }
+}

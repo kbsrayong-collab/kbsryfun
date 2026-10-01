@@ -1,4 +1,3 @@
-import React from 'react';
 import { 
   Menu, 
   PanelLeftClose, 
@@ -7,10 +6,14 @@ import {
   Download, 
   Settings, 
   Sun, 
-  Moon 
+  Moon,
+  Cloud,
+  LogOut,
+  User as UserIcon
 } from 'lucide-react';
 import { NavTab } from './Sidebar';
 import { AppSettings, COLOR_THEMES } from '../types/settings';
+import { useAuth } from '../context/AuthContext';
 
 interface HeaderProps {
   activeTab: NavTab;
@@ -38,6 +41,7 @@ export const Header: React.FC<HeaderProps> = ({
   onToggleThemeMode,
 }) => {
   const currentTheme = COLOR_THEMES.find(t => t.id === settings.colorTheme) || COLOR_THEMES[0];
+  const { currentUser, login, logout, loading } = useAuth();
 
   const getTabLabel = (tab: NavTab) => {
     switch (tab) {
@@ -90,7 +94,7 @@ export const Header: React.FC<HeaderProps> = ({
               )}
             </button>
 
-            {/* Page Title & Breadcrumb (Note: Removed 'ระเบียบ กค. 2562' as requested) */}
+            {/* Page Title & Breadcrumb */}
             <div className="min-w-0">
               <div className="text-2xs text-slate-400 dark:text-slate-500 font-medium truncate">
                 ระบบทะเบียนคุมเงินยืมราชการ
@@ -133,7 +137,7 @@ export const Header: React.FC<HeaderProps> = ({
                   ? 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white'
                   : 'text-slate-500 dark:text-slate-400 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800'
               }`}
-              title="การตั้งค่าระบบ (สีธีม / โหมดมืด / จำนวนแถว)"
+              title="การตั้งค่าระบบ (สีธีม / โหมดมืด / จำนวนแถว / Firebase)"
               aria-label="การตั้งค่า"
             >
               <Settings className="w-4 h-4" />
@@ -158,6 +162,61 @@ export const Header: React.FC<HeaderProps> = ({
               <Plus className="w-4 h-4" />
               <span>+ บันทึกสัญญาใหม่</span>
             </button>
+
+            {/* Firebase Auth & Cloud Status */}
+            {currentUser ? (
+              <div className="flex items-center gap-1.5 sm:gap-2 pl-1.5 border-l border-slate-200 dark:border-slate-800">
+                {/* Cloud indicator badge */}
+                <div 
+                  className="hidden md:flex items-center gap-1 px-2 py-1 rounded-lg bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/80 text-emerald-700 dark:text-emerald-300 text-xs font-medium"
+                  title="เชื่อมต่อฐานข้อมูล Google Cloud Firestore เรียบร้อยแล้ว (Realtime Sync)"
+                >
+                  <Cloud className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+                  <span className="hidden xl:inline">Firebase Cloud</span>
+                </div>
+
+                {/* User Profile display */}
+                <div className="flex items-center gap-2">
+                  {currentUser.photoURL ? (
+                    <img 
+                      src={currentUser.photoURL} 
+                      alt={currentUser.displayName || 'ผู้ใช้งาน'} 
+                      className="w-7 h-7 rounded-full border border-slate-200 dark:border-slate-700 object-cover"
+                    />
+                  ) : (
+                    <div 
+                      className="w-7 h-7 rounded-full text-white flex items-center justify-center text-xs font-bold"
+                      style={{ backgroundColor: currentTheme.accentHex }}
+                    >
+                      {currentUser.displayName ? currentUser.displayName.charAt(0) : <UserIcon className="w-3.5 h-3.5" />}
+                    </div>
+                  )}
+                  <span className="hidden lg:inline text-xs font-semibold text-slate-800 dark:text-slate-200 max-w-[120px] truncate" title={currentUser.email || currentUser.displayName || ''}>
+                    {currentUser.displayName || currentUser.email?.split('@')[0]}
+                  </span>
+                </div>
+
+                {/* Logout Button */}
+                <button
+                  onClick={logout}
+                  className="p-1.5 text-slate-400 hover:text-rose-600 dark:hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
+                  title="ออกจากระบบ Firebase (Logout)"
+                  aria-label="ออกจากระบบ"
+                >
+                  <LogOut className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <button
+                onClick={login}
+                disabled={loading}
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-800 border border-slate-300 dark:border-slate-700 hover:border-slate-400 dark:hover:border-slate-600 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg transition-colors shadow-2xs cursor-pointer whitespace-nowrap"
+                title="เข้าสู่ระบบด้วยบัญชี Google เพื่อเชื่อมต่อ Firebase Firestore"
+              >
+                <Cloud className="w-3.5 h-3.5 text-blue-500" />
+                <span>เข้าสู่ระบบ Google</span>
+              </button>
+            )}
           </div>
         </div>
       </div>

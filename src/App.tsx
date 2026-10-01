@@ -4,6 +4,8 @@ import { LoanStorageService, DEFAULT_APPSHEET_CONFIG, DEFAULT_APPS_SCRIPT_CONFIG
 import { AppsScriptService } from './services/appsScriptService';
 import { calculateLoanSummary } from './utils/loanCalculations';
 import { AppSettings, COLOR_THEMES, ColorThemeId, ThemeMode } from './types/settings';
+import { useAuth } from './context/AuthContext';
+import { FirebaseLoanService } from './services/firebaseLoanService';
 
 // Components
 import { Header } from './components/Header';
@@ -29,6 +31,7 @@ const DEFAULT_SETTINGS: AppSettings = {
 };
 
 export default function App() {
+  const { currentUser } = useAuth();
   const [contracts, setContracts] = useState<LoanContract[]>([]);
   const [appSheetConfig, setAppSheetConfig] = useState<AppSheetConfig>(DEFAULT_APPSHEET_CONFIG);
   const [appsScriptConfig, setAppsScriptConfig] = useState<AppsScriptConfig>(DEFAULT_APPS_SCRIPT_CONFIG);
@@ -158,6 +161,31 @@ export default function App() {
     setAppsScriptConfig(gasCfg);
   };
 
+  // Real-time synchronization with Firebase Cloud Firestore
+  useEffect(() => {
+    if (!currentUser) return;
+
+    const unsubscribe = FirebaseLoanService.subscribeContracts(
+      (firestoreContracts) => {
+        if (firestoreContracts.length > 0) {
+          setContracts(firestoreContracts);
+          LoanStorageService.saveContracts(firestoreContracts);
+        } else {
+          // If Firestore collection is empty, auto-seed with initial/local contracts
+          const local = LoanStorageService.getContracts();
+          if (local.length > 0) {
+            FirebaseLoanService.seedContractsIfEmpty(local).catch(console.error);
+          }
+        }
+      },
+      (err) => {
+        console.warn('Firestore subscription fallback to local storage:', err);
+      }
+    );
+
+    return () => unsubscribe();
+  }, [currentUser]);
+
   // Background Auto-sync to Google Sheets via Apps Script
   const triggerAutoSync = (updatedContracts: LoanContract[]) => {
     const currentCfg = LoanStorageService.getAppsScriptConfig();
@@ -199,10 +227,17 @@ export default function App() {
   };
 
   const handleSaveContract = (contractData: any) => {
+    let saved: LoanContract;
     if (contractToEdit) {
-      LoanStorageService.updateContract(contractToEdit.id, contractData);
+      saved = LoanStorageService.updateContract(contractToEdit.id, contractData)!;
+      if (currentUser && saved) {
+        FirebaseLoanService.updateContract(saved).catch(console.error);
+      }
     } else {
-      LoanStorageService.addContract(contractData);
+      saved = LoanStorageService.addContract(contractData);
+      if (currentUser && saved) {
+        FirebaseLoanService.addContract(saved).catch(console.error);
+      }
     }
     loadData();
     triggerAutoSync(LoanStorageService.getContracts());
@@ -210,6 +245,9 @@ export default function App() {
 
   const handleDeleteContract = (contractId: string) => {
     LoanStorageService.deleteContract(contractId);
+    if (currentUser) {
+      FirebaseLoanService.deleteContract(contractId).catch(console.error);
+    }
     loadData();
     triggerAutoSync(LoanStorageService.getContracts());
     if (selectedContract?.id === contractId) {
@@ -234,9 +272,14 @@ export default function App() {
     loadData();
     triggerAutoSync(LoanStorageService.getContracts());
 
-    // Update selected contract view if open
+    // Update selected contract view and sync to Firebase
     const updated = LoanStorageService.getContracts().find(c => c.id === contractId);
-    if (updated) setSelectedContract(updated);
+    if (updated) {
+      setSelectedContract(updated);
+      if (currentUser) {
+        FirebaseLoanService.updateContract(updated).catch(console.error);
+      }
+    }
   };
 
   const handleVerifyRepayment = (contractId: string, repaymentId: string, verifierName: string) => {
@@ -245,7 +288,12 @@ export default function App() {
     triggerAutoSync(LoanStorageService.getContracts());
 
     const updated = LoanStorageService.getContracts().find(c => c.id === contractId);
-    if (updated) setSelectedContract(updated);
+    if (updated) {
+      setSelectedContract(updated);
+      if (currentUser) {
+        FirebaseLoanService.updateContract(updated).catch(console.error);
+      }
+    }
   };
 
   const handleDeleteRepayment = (contractId: string, repaymentId: string) => {
@@ -254,7 +302,12 @@ export default function App() {
     triggerAutoSync(LoanStorageService.getContracts());
 
     const updated = LoanStorageService.getContracts().find(c => c.id === contractId);
-    if (updated) setSelectedContract(updated);
+    if (updated) {
+      setSelectedContract(updated);
+      if (currentUser) {
+        FirebaseLoanService.updateContract(updated).catch(console.error);
+      }
+    }
   };
 
   // Handlers for Demand Letters & Form 8500

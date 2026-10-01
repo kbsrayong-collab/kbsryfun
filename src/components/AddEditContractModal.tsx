@@ -24,15 +24,15 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
   const currentTheme = COLOR_THEMES.find(t => t.id === settings?.colorTheme) || COLOR_THEMES[0];
   const isDarkMode = settings?.themeMode === 'dark';
 
-  const [contractNo, setContractNo] = useState('');
+  const [contractNo, setContractNo] = useState('01/2570');
   const [contractDate, setContractDate] = useState('');
   const [borrowerName, setBorrowerName] = useState('');
   const [position, setPosition] = useState('');
-  const [department, setDepartment] = useState('');
-  const [fiscalYear, setFiscalYear] = useState<number>(getFiscalYear());
+  const [department, setDepartment] = useState('กบส.');
+  const [fiscalYear, setFiscalYear] = useState<number>(2570);
   const [purpose, setPurpose] = useState('');
   const [loanType, setLoanType] = useState<LoanType>('travel');
-  const [budgetType, setBudgetType] = useState<BudgetType>('เงินงบประมาณ (เงินรายจ่ายประจำปี)');
+  const [budgetType, setBudgetType] = useState<BudgetType>('เงินกองทุนพัฒนาสหกรณ์');
   const [loanAmount, setLoanAmount] = useState<string>('');
   const [disbursementDate, setDisbursementDate] = useState('');
   const [dueDate, setDueDate] = useState('');
@@ -57,16 +57,16 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
     } else {
       // Default new contract
       const today = new Date().toISOString().split('T')[0];
-      const nextNo = `{String(existingContractsCount + 1).padStart(2, '0')}/${getFiscalYear()}`;
+      const nextNo = `${String(existingContractsCount + 1).padStart(2, '0')}/2570`;
       setContractNo(nextNo);
       setContractDate(today);
       setBorrowerName('');
       setPosition('');
       setDepartment('กบส.');
-      setFiscalYear(getFiscalYear());
+      setFiscalYear(2570);
       setPurpose('');
       setLoanType('travel');
-      setBudgetType('เงินงบประมาณ (เงินรายจ่ายประจำปี)');
+      setBudgetType('เงินกองทุนพัฒนาสหกรณ์');
       setLoanAmount('');
       setDisbursementDate(today);
       setDueDate(calculateDefaultDueDate(today, 'travel'));
@@ -103,7 +103,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
       contractDate,
       borrowerName: borrowerName.trim(),
       position: position.trim() || 'เจ้าหน้าที่',
-      department: department.trim() || 'ส่วนราชการ',
+      department: department.trim() || 'กบส.',
       fiscalYear: Number(fiscalYear),
       purpose: purpose.trim() || 'เพื่อใช้จ่ายในการปฏิบัติราชการ',
       loanType,
@@ -130,19 +130,19 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-2xl w-full overflow-hidden my-6 animate-in fade-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex items-center justify-between">
+        <div 
+          className="px-6 py-4 text-white flex items-center justify-between shadow-xs transition-colors"
+          style={{ backgroundColor: currentTheme.accentHex }}
+        >
           <div className="flex items-center gap-3">
-            <div 
-              className="w-9 h-9 rounded-xl text-white flex items-center justify-center font-bold text-xs shadow-xs ring-2 ring-white/20 shrink-0"
-              style={{ backgroundColor: currentTheme.accentHex }}
-            >
+            <div className="w-9 h-9 rounded-xl bg-white/20 text-white flex items-center justify-center font-bold text-xs shadow-xs ring-1 ring-white/30 shrink-0">
               {contractToEdit ? 'แก้ไข' : 'ใหม่'}
             </div>
             <div>
-              <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
+              <h2 className="text-base font-bold text-white tracking-tight">
                 {contractToEdit ? 'แก้ไขข้อมูลสัญญายืมเงิน' : 'บันทึกสัญญายืมเงินราชการ'}
               </h2>
-              <p className="text-xs text-slate-600 dark:text-slate-300 font-normal">
+              <p className="text-xs text-white/90 font-normal">
                 กรอกรายละเอียดสัญญาเงินยืมตามระเบียบกระทรวงการคลัง
               </p>
             </div>
@@ -150,7 +150,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 rounded-lg hover:bg-slate-200/60 dark:hover:bg-slate-800 transition-colors"
+            className="p-1.5 text-white/80 hover:text-white rounded-lg hover:bg-black/15 transition-colors cursor-pointer"
             title="ปิดหน้าต่าง"
           >
             <X className="w-5 h-5" />
@@ -216,7 +216,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 required
                 value={borrowerName}
                 onChange={(e) => setBorrowerName(e.target.value)}
-                placeholder="เช่น นายก ระยอง"
+                placeholder="เช่น นายกอ ระยอง"
                 className={standardInputClass}
                 style={inputStyle}
               />
@@ -230,7 +230,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 type="text"
                 value={position}
                 onChange={(e) => setPosition(e.target.value)}
-                placeholder="เช่น นักวิชาการเงินฯ ชำนาญการ"
+                placeholder="เช่น นักวิชาการสหกรณ์ปฏิบัติการ ชำนาญการ"
                 className={standardInputClass}
                 style={inputStyle}
               />
@@ -244,7 +244,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 type="text"
                 value={department}
                 onChange={(e) => setDepartment(e.target.value)}
-                placeholder="เช่น กลุ่มงานบริหารทั่วไป"
+                placeholder="เช่น กบส."
                 className={standardInputClass}
                 style={inputStyle}
               />
@@ -280,11 +280,9 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 className={standardInputClass}
                 style={inputStyle}
               >
-                <option value="เงินงบประมาณ (เงินรายจ่ายประจำปี)">เงินงบประมาณ (เงินรายจ่ายประจำปี)</option>
-                <option value="เงินนอกงบประมาณ">เงินนอกงบประมาณ</option>
-                <option value="เงินรายได้แผ่นดิน / รายได้สถานศึกษา">เงินรายได้แผ่นดิน / รายได้สถานศึกษา</option>
-                <option value="เงินทดรองราชการ">เงินทดรองราชการ</option>
-                <option value="เงินอุดหนุนทั่วไป / เฉพาะกิจ">เงินอุดหนุนทั่วไป / เฉพาะกิจ</option>
+                <option value="เงินกองทุนพัฒนาสหกรณ์">เงินกองทุนพัฒนาสหกรณ์</option>
+                <option value="เงินกองทุนสงเคราะห์เกษตร">เงินกองทุนสงเคราะห์เกษตร</option>
+                <option value="เงินรายได้นิคมสหกรณ์">เงินรายได้นิคมสหกรณ์</option>
               </select>
             </div>
           </div>

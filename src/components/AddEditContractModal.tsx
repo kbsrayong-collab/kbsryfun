@@ -140,7 +140,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
             </div>
             <div>
               <h2 className="text-base font-bold text-slate-900 dark:text-white tracking-tight">
-                {contractToEdit ? 'แก้ไขข้อมูลสัญญายืมเงิน' : 'บันทึกสัญญายืมเงินราชการ (แบบ 8500)'}
+                {contractToEdit ? 'แก้ไขข้อมูลสัญญายืมเงิน' : 'บันทึกสัญญายืมเงินราชการ'}
               </h2>
               <p className="text-xs text-slate-600 dark:text-slate-300 font-normal">
                 กรอกรายละเอียดสัญญาเงินยืมตามระเบียบกระทรวงการคลัง

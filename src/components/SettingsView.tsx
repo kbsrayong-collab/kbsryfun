@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { 
   Palette, 
   Sun, 
@@ -10,20 +10,9 @@ import {
   Monitor, 
   Layers,
   Sparkles,
-  Info,
-  Cloud,
-  Database,
-  UploadCloud,
-  CheckCircle2,
-  AlertCircle,
-  LogIn,
-  LogOut,
-  RefreshCw
+  Info
 } from 'lucide-react';
 import { AppSettings, COLOR_THEMES, ColorThemeId, ThemeMode } from '../types/settings';
-import { useAuth } from '../context/AuthContext';
-import { FirebaseLoanService } from '../services/firebaseLoanService';
-import { LoanStorageService } from '../services/loanStorage';
 
 interface SettingsViewProps {
   settings: AppSettings;
@@ -38,29 +27,6 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
   onResetDefaults,
   onNavigateToContracts,
 }) => {
-  const { currentUser, login, logout, isFirebaseConnected, loading } = useAuth();
-  const [isSyncing, setIsSyncing] = useState(false);
-  const [syncStatusMsg, setSyncStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
-
-  const handleSyncToFirestore = async () => {
-    setIsSyncing(true);
-    setSyncStatusMsg(null);
-    try {
-      const localContracts = LoanStorageService.getContracts();
-      const count = await FirebaseLoanService.uploadAllContractsToFirestore(localContracts);
-      setSyncStatusMsg({
-        type: 'success',
-        text: `สำรองและซิงก์ข้อมูลสัญญาสำเร็จจำนวน ${count} รายการขึ้น Google Cloud Firestore`
-      });
-    } catch (err: any) {
-      setSyncStatusMsg({
-        type: 'error',
-        text: err?.message || 'เกิดข้อผิดพลาดในการซิงก์ข้อมูลขึ้น Firestore'
-      });
-    } finally {
-      setIsSyncing(false);
-    }
-  };
 
   return (
     <div className="space-y-6 max-w-5xl mx-auto">
@@ -326,139 +292,7 @@ export const SettingsView: React.FC<SettingsViewProps> = ({
         </div>
       </div>
 
-      {/* Section 4: Firebase Firestore Cloud Database */}
-      <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-xs space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-700 pb-3">
-          <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-amber-100 dark:bg-amber-950/60 text-amber-700 dark:text-amber-400 flex items-center justify-center">
-              <Cloud className="w-4 h-4" />
-            </div>
-            <div>
-              <h3 className="text-sm font-bold text-slate-900 dark:text-white">
-                4. ฐานข้อมูลคลาวด์ Firebase Firestore (Cloud Database)
-              </h3>
-              <p className="text-2xs text-slate-500 dark:text-slate-400">
-                ระบบเชื่อมต่อฐานข้อมูล Google Cloud Firestore ซิงก์ข้อมูลแบบเรียลไทม์ระหว่างอุปกรณ์
-              </p>
-            </div>
-          </div>
-          <span className={`inline-flex items-center gap-1.5 text-xs font-semibold px-2.5 py-0.5 rounded-full ${
-            isFirebaseConnected 
-              ? 'bg-emerald-100 dark:bg-emerald-950 text-emerald-800 dark:text-emerald-300' 
-              : 'bg-amber-100 dark:bg-amber-950 text-amber-800 dark:text-amber-300'
-          }`}>
-            <span className={`w-2 h-2 rounded-full ${isFirebaseConnected ? 'bg-emerald-500 animate-pulse' : 'bg-amber-500'}`} />
-            {isFirebaseConnected ? 'เชื่อมต่อออนไลน์' : 'พร้อมเชื่อมต่อ'}
-          </span>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 pt-1">
-          {/* Cloud Config Details */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 space-y-2.5 text-xs">
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Google Cloud Project:</span>
-              <span className="font-mono font-semibold text-slate-800 dark:text-slate-200">flowing-signal-7v9wh</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">Firestore Database ID:</span>
-              <span className="font-mono text-2xs font-semibold text-slate-700 dark:text-slate-300 truncate max-w-[180px]">
-                ai-studio-7175a7fc-3c86-407c-82ec-ec3249842092
-              </span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">ภูมิภาค (Region):</span>
-              <span className="font-mono text-slate-800 dark:text-slate-200">asia-southeast1 (สิงคโปร์)</span>
-            </div>
-            <div className="flex items-center justify-between">
-              <span className="text-slate-500 dark:text-slate-400 font-medium">คอลเลกชันหลัก:</span>
-              <span className="font-mono text-slate-800 dark:text-slate-200">/contracts, /users</span>
-            </div>
-          </div>
-
-          {/* User Auth & Sync Actions */}
-          <div className="p-4 rounded-xl bg-slate-50 dark:bg-slate-900/60 border border-slate-200 dark:border-slate-700/80 flex flex-col justify-between gap-3 text-xs">
-            <div>
-              <div className="text-xs font-semibold text-slate-700 dark:text-slate-300 mb-1">
-                สถานะการยืนยันตัวตนเจ้าหน้าที่:
-              </div>
-              {currentUser ? (
-                <div className="flex items-center gap-2 py-1">
-                  {currentUser.photoURL ? (
-                    <img src={currentUser.photoURL} alt="" className="w-6 h-6 rounded-full border border-slate-300" />
-                  ) : (
-                    <div className="w-6 h-6 rounded-full bg-emerald-600 text-white flex items-center justify-center text-xs font-bold">
-                      {currentUser.displayName ? currentUser.displayName.charAt(0) : 'U'}
-                    </div>
-                  )}
-                  <div className="min-w-0">
-                    <div className="font-semibold text-slate-900 dark:text-white truncate">
-                      {currentUser.displayName || 'เจ้าหน้าที่ผู้ปฏิบัติงาน'}
-                    </div>
-                    <div className="text-2xs text-slate-500 dark:text-slate-400 truncate">
-                      {currentUser.email}
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="text-2xs text-slate-500 dark:text-slate-400">
-                  ยังไม่ได้เข้าสู่ระบบ — กรุณาเข้าสู่ระบบด้วย Google เพื่อซิงก์ข้อมูลสัญญากับ Cloud
-                </div>
-              )}
-            </div>
-
-            <div className="flex flex-wrap items-center gap-2 pt-1 border-t border-slate-200 dark:border-slate-700/60">
-              {currentUser ? (
-                <>
-                  <button
-                    onClick={handleSyncToFirestore}
-                    disabled={isSyncing}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium text-xs shadow-xs transition-colors cursor-pointer disabled:opacity-50"
-                  >
-                    {isSyncing ? (
-                      <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <UploadCloud className="w-3.5 h-3.5" />
-                    )}
-                    <span>{isSyncing ? 'กำลังซิงก์ข้อมูล...' : 'ซิงก์ข้อมูลสัญญาขึ้น Cloud'}</span>
-                  </button>
-                  <button
-                    onClick={logout}
-                    className="inline-flex items-center gap-1 px-2.5 py-1.5 text-xs text-rose-600 dark:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-950/40 rounded-lg transition-colors cursor-pointer"
-                  >
-                    <LogOut className="w-3.5 h-3.5" />
-                    <span>ออกจากระบบ</span>
-                  </button>
-                </>
-              ) : (
-                <button
-                  onClick={login}
-                  disabled={loading}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold text-xs shadow-xs transition-colors cursor-pointer"
-                >
-                  <LogIn className="w-3.5 h-3.5" />
-                  <span>เข้าสู่ระบบด้วย Google</span>
-                </button>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* Sync message feedback */}
-        {syncStatusMsg && (
-          <div className={`p-3 rounded-xl flex items-center gap-2 text-xs ${
-            syncStatusMsg.type === 'success'
-              ? 'bg-emerald-50 dark:bg-emerald-950/60 text-emerald-800 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800'
-              : 'bg-rose-50 dark:bg-rose-950/60 text-rose-800 dark:text-rose-300 border border-rose-200 dark:border-rose-800'
-          }`}>
-            {syncStatusMsg.type === 'success' ? (
-              <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-            ) : (
-              <AlertCircle className="w-4 h-4 text-rose-600 shrink-0" />
-            )}
-            <span>{syncStatusMsg.text}</span>
-          </div>
-        )}
-      </div>
     </div>
   );
 };
+

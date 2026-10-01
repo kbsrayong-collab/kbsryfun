@@ -33,7 +33,7 @@ export const AddRepaymentModal: React.FC<AddRepaymentModalProps> = ({
   const [voucherAmount, setVoucherAmount] = useState<string>('');
   const [voucherNo, setVoucherNo] = useState('');
   const [autoVerify, setAutoVerify] = useState(true);
-  const [verifierName, setVerifierName] = useState('นางกานดา สุขสมบัติ (หน.งานการเงิน)');
+  const [verifierName, setVerifierName] = useState('ธรรมวิทย์');
   const [notes, setNotes] = useState('');
 
   // Calculations for current inputs
@@ -286,13 +286,15 @@ export const AddRepaymentModal: React.FC<AddRepaymentModalProps> = ({
                 <label className="block text-slate-600 dark:text-slate-400 mb-1 text-2xs">
                   ชื่อผู้ตรวจรับรอง
                 </label>
-                <input
-                  type="text"
+                <select
                   value={verifierName}
                   onChange={(e) => setVerifierName(e.target.value)}
                   className={standardInputClass}
                   style={inputStyle}
-                />
+                >
+                  <option value="ธรรมวิทย์">ธรรมวิทย์</option>
+                  <option value="เปมิกา">เปมิกา</option>
+                </select>
               </div>
             )}
           </div>

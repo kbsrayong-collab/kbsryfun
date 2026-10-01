@@ -267,7 +267,7 @@ export const ContractDetailModal: React.FC<ContractDetailModalProps> = ({
                           ) : (
                             <button
                               type="button"
-                              onClick={() => onVerifyRepayment(contract.id, r.id, 'นางกานดา สุขสมบัติ (หน.งานการเงิน)')}
+                              onClick={() => onVerifyRepayment(contract.id, r.id, 'ธรรมวิทย์')}
                               className="text-2xs px-2 py-0.5 bg-amber-50 dark:bg-amber-950/40 text-amber-700 dark:text-amber-300 rounded font-medium border border-amber-200 dark:border-amber-800 hover:bg-amber-100 transition-colors"
                             >
                               กดรับรองใบสำคัญ

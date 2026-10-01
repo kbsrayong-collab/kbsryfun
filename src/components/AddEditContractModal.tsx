@@ -57,7 +57,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
     } else {
       // Default new contract
       const today = new Date().toISOString().split('T')[0];
-      const nextNo = `{String(existingContractsCount + 1).padStart(2, '0')}/2570`;
+      const nextNo = `0${String(existingContractsCount + 1).padStart(2, '0')}/2570`;
       setContractNo(nextNo);
       setContractDate(today);
       setBorrowerName('');

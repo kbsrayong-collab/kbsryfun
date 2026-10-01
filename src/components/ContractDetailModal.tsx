@@ -37,25 +37,25 @@ export const ContractDetailModal: React.FC<ContractDetailModalProps> = ({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-xs overflow-y-auto">
       <div className="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-2xl max-w-4xl w-full overflow-hidden my-8 animate-in fade-in zoom-in-95 duration-150">
         {/* Modal Header */}
-        <div className="px-6 py-4 border-b border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-850 flex items-center justify-between">
+        <div 
+          className="px-6 py-4 text-white flex items-center justify-between shadow-xs transition-colors"
+          style={{ backgroundColor: currentTheme.accentHex }}
+        >
           <div className="flex items-center gap-3">
-            <div 
-              className="w-10 h-10 rounded-xl text-white flex items-center justify-center font-bold text-sm shadow-xs ring-2 ring-white/20 shrink-0"
-              style={{ backgroundColor: currentTheme.accentHex }}
-            >
+            <div className="w-10 h-10 rounded-xl bg-white/20 text-white flex items-center justify-center font-bold text-sm shadow-xs ring-1 ring-white/30 shrink-0">
               ย.
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-lg font-bold text-slate-900 dark:text-white font-mono">
+                <h2 className="text-lg font-bold text-white font-mono">
                   สัญญาเลขที่ {contract.contractNo}
                 </h2>
-                <span className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium ${badge.bg}`}>
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 text-white backdrop-blur-xs ring-1 ring-white/30">
                   <span className={`w-1.5 h-1.5 rounded-full ${badge.dot}`} />
                   {summary.statusLabel}
                 </span>
               </div>
-              <p className="text-xs text-slate-600 dark:text-slate-400">
+              <p className="text-xs text-white/90 mt-0.5">
                 ผู้ยืม: {contract.borrowerName} ({contract.position}) · {contract.department}
               </p>
             </div>
@@ -63,7 +63,7 @@ export const ContractDetailModal: React.FC<ContractDetailModalProps> = ({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-200/60 dark:hover:bg-slate-800 rounded-lg transition-colors"
+            className="p-1.5 text-white/80 hover:text-white hover:bg-black/15 rounded-lg transition-colors cursor-pointer"
             title="ปิดหน้าต่าง"
           >
             <X className="w-5 h-5" />

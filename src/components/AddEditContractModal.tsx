@@ -170,7 +170,7 @@ export const AddEditContractModal: React.FC<AddEditContractModalProps> = ({
                 required
                 value={contractNo}
                 onChange={(e) => setContractNo(e.target.value)}
-                placeholder="เช่น 01/2569"
+                placeholder="เช่น 01/2570"
                 className={monoInputClass}
                 style={inputStyle}
               />
